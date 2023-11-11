@@ -6,12 +6,17 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { Cars } from './pages/Cars.tsx';
+import { Customers } from './pages/Customers.tsx';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
+      {
+        path: "/customers",
+        element: <Customers />
+      },
       {
         path: "/cars",
         element: <Cars />
