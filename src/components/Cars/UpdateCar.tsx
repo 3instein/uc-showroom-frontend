@@ -8,15 +8,30 @@ import { useDataTableStore } from '../../stores/DataTableStore';
 import Swal from 'sweetalert2';
 import { customNumberFormat } from '../../functions/general';
 
+/**
+ * Props for the UpdateCar component.
+ *
+ * @interface UpdateCarProps
+ */
 interface UpdateCarProps {
-    car: Car
+    car: Car; // The car data to be updated
 }
 
-const UpdateCar: FC<UpdateCarProps> = ({car}) => {
+/**
+ * UpdateCar component allows users to update details of a car.
+ *
+ * @component
+ * @param {UpdateCarProps} props - The properties of the component.
+ * @returns {JSX.Element} - The rendered UpdateCar component.
+ */
 
+const UpdateCar: FC<UpdateCarProps> = ({car}) => {
+    // Access the moda elemetn by using car.id
     const modal = document.getElementById(`update-car-modal-${car.id}`);
+    // Access the DataTable store to update the table data
     const {tableData, setTableData} = useDataTableStore()
 
+    // Formik hook for form management and validation
     const formik = useFormik({
         initialValues: {
             model: car.model,
@@ -27,6 +42,7 @@ const UpdateCar: FC<UpdateCarProps> = ({car}) => {
             fuel_type: car.fuel_type,
             trunk_capacity: car.trunk_capacity,
         },
+        // Validation schema for form fields
         validationSchema: Yup.object({
             model: Yup.string().required('Model mobil harus diisi'),
             year: Yup.number().required('Tahun mobil harus diisi'),
@@ -41,6 +57,7 @@ const UpdateCar: FC<UpdateCarProps> = ({car}) => {
             trunk_capacity: Yup.number().required('Kapasitas bagasi mobil harus diisi'),
         }),
         onSubmit: async (values) => {
+            // Construct updated car object
             const updatedCar: Car = {
                 id: car.id,
                 model: values.model,
@@ -52,14 +69,17 @@ const UpdateCar: FC<UpdateCarProps> = ({car}) => {
                 trunk_capacity: Number(values.trunk_capacity),
             }
             try {
+                // Attempt to update car via API
                 const response = await updateCar(updatedCar);
                 if (response.status === 200) {
+                    // Update local tableData with the updated car
                     setTableData(tableData.map((car) => {
                         if (car.id === updatedCar.id) {
                             return updatedCar
                         }
                         return car
                     }))
+                    // Show success message
                     Swal.fire({
                         title: 'Berhasil!',
                         text: 'Mobil berhasil diupdate',
@@ -67,11 +87,13 @@ const UpdateCar: FC<UpdateCarProps> = ({car}) => {
                         confirmButtonText: 'OK',
                         target: modal
                     }).then(() => {
+                        // Close the modal
                         if (modal instanceof HTMLDialogElement) {
                             modal.close()
                         }
                     })
                 } else {
+                    // Show error message
                     Swal.fire({
                         title: 'Gagal!',
                         text: 'Mobil gagal diupdate',
@@ -85,6 +107,8 @@ const UpdateCar: FC<UpdateCarProps> = ({car}) => {
             }
         }
     })
+
+    // Render the UpdateCar component
     return (
         <dialog id={`update-car-modal-${car.id}`} className="modal">
             <div className="modal-box text-left">
