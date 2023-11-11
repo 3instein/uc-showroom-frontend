@@ -53,7 +53,7 @@ const CreateTruck: FC = () => {
                     setTableData([...tableData, response.data.data as Truck])
                     Swal.fire({
                         title: 'Berhasil!',
-                        text: 'Truck berhasil ditambahkan',
+                        text: 'Truk berhasil ditambahkan',
                         icon: 'success',
                         confirmButtonText: 'OK',
                         target: modal
@@ -65,7 +65,7 @@ const CreateTruck: FC = () => {
                 } else {
                     Swal.fire({
                         title: 'Gagal!',
-                        text: 'Truck gagal ditambahkan',
+                        text: 'Truk gagal ditambahkan',
                         icon: 'error',
                         confirmButtonText: 'OK',
                         target: modal

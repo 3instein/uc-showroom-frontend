@@ -47,7 +47,7 @@ const Cars: FC = () => {
                 } catch (error) {
                     Swal.fire({
                         title: 'Gagal!',
-                        text: 'Mobil gagal dihapus',
+                        text: 'Mobil ini telah mempunyai data pesanan!',
                         icon: 'error',
                         confirmButtonText: 'OK',
                     })

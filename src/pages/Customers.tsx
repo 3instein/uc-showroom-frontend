@@ -45,7 +45,7 @@ const Customers: FC = () => {
                 } catch (error) {
                     Swal.fire({
                         title: 'Gagal!',
-                        text: 'Customer gagal dihapus',
+                        text: 'Customer ini telah mempunyai pesanan!',
                         icon: 'error',
                         confirmButtonText: 'OK',
                     })

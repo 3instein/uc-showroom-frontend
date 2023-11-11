@@ -32,14 +32,14 @@ const Trucks: FC = () => {
                         setTableData(tableData.filter((truck) => truck.id !== response.data.data.id))
                         Swal.fire({
                             title: 'Berhasil!',
-                            text: 'Truck berhasil dihapus',
+                            text: 'Truk berhasil dihapus',
                             icon: 'success',
                             confirmButtonText: 'OK',
                         })
                     } else {
                         Swal.fire({
                             title: 'Gagal!',
-                            text: 'Truck gagal dihapus',
+                            text: 'Truk gagal dihapus',
                             icon: 'error',
                             confirmButtonText: 'OK',
                         })
@@ -47,7 +47,7 @@ const Trucks: FC = () => {
                 } catch (error) {
                     Swal.fire({
                         title: 'Gagal!',
-                        text: 'Truck gagal dihapus',
+                        text: 'Truk ini telah mempunyai data pesanan!',
                         icon: 'error',
                         confirmButtonText: 'OK',
                     })

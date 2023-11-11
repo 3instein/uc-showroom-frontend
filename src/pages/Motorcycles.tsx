@@ -47,7 +47,7 @@ const Motorcycles: FC = () => {
                 } catch (error) {
                     Swal.fire({
                         title: 'Gagal!',
-                        text: 'Motor gagal dihapus',
+                        text: 'Motor ini telah mempunyai data pesanan!',
                         icon: 'error',
                         confirmButtonText: 'OK',
                     })
