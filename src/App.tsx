@@ -58,6 +58,18 @@ function App() {
               >
                 <button className='text-lg font-semibold'>Motor</button>
               </NavLink>
+              <NavLink
+                to={`orders`}
+                className={({ isActive, isPending }) =>
+                  isActive
+                    ? "tab tab-lg tab-active"
+                    : isPending
+                      ? "pending"
+                      : "tab tab-lg"
+                }
+              >
+                <button className='text-lg font-semibold'>Pesanan</button>
+              </NavLink>
             </div>
             <Outlet />
           </div>

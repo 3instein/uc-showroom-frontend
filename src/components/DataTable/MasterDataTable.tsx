@@ -7,7 +7,7 @@ import axios from "axios";
 interface MasterDataTableProps {
     tableColumns: TableColumn<any>[]
     actions?: ReactNode[]
-    apiURL: 'cars' | 'customers' | 'trucks' | 'motorcycles'
+    apiURL: 'cars' | 'customers' | 'trucks' | 'motorcycles' | 'orders'
     setLoading?: Dispatch<SetStateAction<boolean>>
 }
 

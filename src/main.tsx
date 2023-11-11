@@ -9,6 +9,7 @@ import { Cars } from './pages/Cars.tsx';
 import { Customers } from './pages/Customers.tsx';
 import { Trucks } from './pages/Trucks.tsx';
 import { Motorcycles } from './pages/Motorcycles.tsx';
+import { Orders } from './pages/Orders.tsx';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/motorcycles",
         element: <Motorcycles />
+      },
+      {
+        path: "/orders",
+        element: <Orders />
       }
     ]
   },
