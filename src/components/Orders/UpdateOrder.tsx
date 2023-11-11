@@ -1,7 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { FC, useEffect, useState } from 'react';
-import { FaPlus } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import Select from 'react-select';
 import { Customer } from '../../interfaces/Customer';
@@ -11,9 +10,14 @@ import { SelectOption } from '../../interfaces/SelectOption';
 import { Car } from '../../interfaces/Car';
 import { Truck } from '../../interfaces/Truck';
 import { Motorcycle } from '../../interfaces/Motorcycle';
-import { createOrder } from '../../api/OrderCRUD';
+import { createOrder, updateOrder } from '../../api/OrderCRUD';
+import { Order } from '../../interfaces/Order';
 
-const CreateOrder: FC = () => {
+interface UpdateOrderProps {
+    order: Order
+}
+
+const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
 
     const vehicle_types: SelectOption[] = [
         { value: 'car', label: 'Mobil' },
@@ -30,11 +34,11 @@ const CreateOrder: FC = () => {
 
     const formik = useFormik({
         initialValues: {
-            customer: null,
-            vehicle_type: '',
-            car: null,
-            truck: null,
-            motorcycle: null,
+            customer: order.customer.id,
+            vehicle_type: order.vehicle_type,
+            car: order.car ? order.car.id : null,
+            truck: order.truck ? order.truck.id : null,
+            motorcycle: order.motorcycle ? order.motorcycle.id : null,
         },
         validationSchema: Yup.object({
             customer: Yup.number().required('Customer harus diisi'),
@@ -44,17 +48,17 @@ const CreateOrder: FC = () => {
             const vehicle_id = values.vehicle_type === 'car' ? values.car : values.vehicle_type === 'truck' ? values.truck : values.motorcycle
             const vehicle_type = values.vehicle_type === 'car' ? 'car' : values.vehicle_type === 'truck' ? 'truck' : 'motorcycle'
             try {
-                const response = await createOrder(values.customer!, vehicle_type, vehicle_id!)
+                const response = await updateOrder(order.id, values.customer!, vehicle_type, vehicle_id!)
                 if (response.status === 200) {
                     mutate(BASE_URL + 'orders')
                     Swal.fire({
                         title: 'Berhasil!',
-                        text: 'Order berhasil ditambahkan',
+                        text: 'Order berhasil diupdate',
                         icon: 'success',
                         confirmButtonText: 'OK',
-                        target: document.getElementById('create-order-modal') as HTMLElement
+                        target: document.getElementById(`update-order-modal-${order.id}`) as HTMLElement
                     }).then(() => {
-                        const modal = document.getElementById('create-order-modal');
+                        const modal = document.getElementById(`update-order-modal-${order.id}`);
                         if (modal instanceof HTMLDialogElement) {
                             modal.close()
                         }
@@ -62,10 +66,10 @@ const CreateOrder: FC = () => {
                 } else {
                     Swal.fire({
                         title: 'Gagal!',
-                        text: 'Order gagal ditambahkan',
+                        text: 'Order gagal diupdate',
                         icon: 'error',
                         confirmButtonText: 'OK',
-                        target: document.getElementById('create-order-modal') as HTMLElement
+                        target: document.getElementById(`update-order-modal-${order.id}`) as HTMLElement
                     })
                 }
             } catch (error) {
@@ -133,27 +137,13 @@ const CreateOrder: FC = () => {
 
     return (
         <>
-            {/* Open Modal Button */}
-            <button
-                className="btn btn-md w-36 btn-ghost bg-blue-500 text-white py-2 px-4 hover:bg-blue-600"
-                type="button"
-                onClick={() => {
-                    const modal = document.getElementById('create-order-modal');
-                    if (modal instanceof HTMLDialogElement) {
-                        modal.showModal()
-                    }
-                }}
-            >
-                <FaPlus className="me-2" />
-                Tambah
-            </button>
-            <dialog id="create-order-modal" className="modal">
+            <dialog id={`update-order-modal-${order.id}`} className="modal">
                 <div className="modal-box h-1/2 text-left">
                     <form method="dialog">
                         {/* Modal Close Button */}
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    <h3 className="font-bold text-lg">Form Tambah Order</h3>
+                    <h3 className="font-bold text-lg">Form Update Order</h3>
                     <form onSubmit={formik.handleSubmit} noValidate>
                         {/* Customer */}
                         <div className="form-control w-full max-w-xs">
@@ -200,7 +190,7 @@ const CreateOrder: FC = () => {
                                     }
                                 }
                                 onBlur={
-                                    () => formik.values.vehicle_type === '' && formik.setFieldTouched("vehicle_type", true)
+                                    () => formik.values.vehicle_type === null && formik.setFieldTouched("vehicle_type", true)
                                 }
                                 isSearchable={true}
                             />
@@ -298,7 +288,7 @@ const CreateOrder: FC = () => {
                                         )}
                                     </div>
                         }
-                        <button type='submit' className='btn btn-primary float-right'>Tambah</button>
+                        <button type='submit' className='btn btn-primary float-right'>Update</button>
                     </form>
                 </div>
                 {/* Modal Backdrop Close */}
@@ -310,4 +300,4 @@ const CreateOrder: FC = () => {
     )
 }
 
-export { CreateOrder }
+export { UpdateOrder }

@@ -8,6 +8,7 @@ import { Order } from '../interfaces/Order';
 import { CreateOrder } from '../components/Orders/CreateOrder';
 import { deleteOrder } from '../api/OrderCRUD';
 import { customNumberFormat } from '../functions/general';
+import { UpdateOrder } from '../components/Orders/UpdateOrder';
 
 const Orders: FC = () => {
 
@@ -65,7 +66,7 @@ const Orders: FC = () => {
         },
         {
             name: "Payment",
-            selector: row => row.vehicle_price && customNumberFormat(row.vehicle_price),
+            selector: row => row.vehicle_price && 'Rp. ' + customNumberFormat(row.vehicle_price),
         },
         // {
         //     name: "Address",
@@ -131,7 +132,7 @@ const Orders: FC = () => {
                 apiURL='orders'
                 actions={actions}
             />
-            {/* {showUpdateModal && <UpdateCustomer customer={customer!} />} */}
+            {showUpdateModal && <UpdateOrder order={order!} />}
         </>
     )
 }

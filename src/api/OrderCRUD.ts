@@ -10,9 +10,13 @@ export const createOrder = async (customer_id: number, vehicle_type: 'car' | 'tr
     });
 }
 
-// export const updateCustomer = async (customer: Customer) => {
-//     return await axios.put(`${BASE_URL}/orders/${customer.id}`, customer);
-// }
+export const updateOrder = async (id: number, customer_id: number, vehicle_type: 'car' | 'truck' | 'motorcycle', vehicle_id: number) => {
+    return await axios.put(`${BASE_URL}/${id}`, {
+        customer_id,
+        vehicle_type,
+        vehicle_id
+    });
+}
 
 export const deleteOrder = async (id: number, vehicle_type: 'car' | 'truck' | 'motorcycle') => {
     switch (vehicle_type) {
