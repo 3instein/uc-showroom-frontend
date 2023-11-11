@@ -1,10 +1,11 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FC } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import { updateCustomer } from '../../api/CustomerCRUD';
 import { Customer } from '../../interfaces/Customer';
 import { useDataTableStore } from '../../stores/DataTableStore';
 import Swal from 'sweetalert2';
+import { insertCustomerResource } from '../../api/CustomerResource';
 
 interface UpdateCustomerProps {
     customer: Customer
@@ -14,6 +15,20 @@ const UpdateCustomer: FC<UpdateCustomerProps> = ({ customer }) => {
 
     const { tableData, setTableData } = useDataTableStore()
 
+    const [file, setFile] = useState<string | null>(null);
+
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        if (e.target.files && e.target.files[0]) {
+            setFile(URL.createObjectURL(e.target.files[0]));
+            formik.handleChange({
+                target: {
+                    name: "id_card_photo",
+                    value: e.target.files[0]
+                }
+            })
+        }
+    }
+
     const updateCustomerModal = document.getElementById(`update-customer-modal-${customer.id}`);
 
     const formik = useFormik({
@@ -22,50 +37,56 @@ const UpdateCustomer: FC<UpdateCustomerProps> = ({ customer }) => {
             address: customer.address,
             phone: customer.phone,
             id_card_number: customer.id_card_number,
+            id_card_photo: customer.id_card_photo
         },
         validationSchema: Yup.object({
             name: Yup.string().required('Nama harus diisi'),
             address: Yup.string().required('Alamat harus diisi'),
             phone: Yup.string().required('Nomor telepon harus diisi'),
             id_card_number: Yup.string().required('Nomor KTP harus diisi'),
+            id_card_photo: Yup.mixed().required('Foto KTP harus diisi')
         }),
         onSubmit: async (values) => {
-            const updatedCustomer: Customer = {
-                id: customer.id,
-                name: values.name,
-                address: values.address,
-                phone: values.phone,
-                id_card_number: values.id_card_number,
-            }
             try {
-                const response = await updateCustomer(updatedCustomer);
-                if (response.status === 200) {
-                    setTableData(tableData.map((customer) => {
-                        if (customer.id === updatedCustomer.id) {
-                            return updatedCustomer
-                        }
-                        return customer
-                    }))
-                    Swal.fire({
-                        title: 'Berhasil!',
-                        text: 'Customer berhasil diupdate',
-                        icon: 'success',
-                        confirmButtonText: 'OK',
-                        target: updateCustomerModal
-                    }).then(() => {
-                        const modal = updateCustomerModal
-                        if (modal instanceof HTMLDialogElement) {
-                            modal.close()
-                        }
-                    })
-                } else {
-                    Swal.fire({
-                        title: 'Gagal!',
-                        text: 'Customer gagal diupdate',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                        target: document.getElementById('create-customer-modal') as HTMLElement
-                    })
+                const resourceResponse = await insertCustomerResource(values.id_card_photo);
+                if (resourceResponse.status === 200) {
+                    const updatedCustomer: Customer = {
+                        id: customer.id,
+                        name: values.name,
+                        address: values.address,
+                        phone: values.phone,
+                        id_card_number: values.id_card_number,
+                        id_card_photo: resourceResponse.data.data.imageUrl
+                    }
+                    const response = await updateCustomer(updatedCustomer);
+                    if (response.status === 200) {
+                        setTableData(tableData.map((customer) => {
+                            if (customer.id === updatedCustomer.id) {
+                                return updatedCustomer
+                            }
+                            return customer
+                        }))
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Customer berhasil diupdate',
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                            target: updateCustomerModal
+                        }).then(() => {
+                            const modal = updateCustomerModal
+                            if (modal instanceof HTMLDialogElement) {
+                                modal.close()
+                            }
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Customer gagal diupdate',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            target: document.getElementById('create-customer-modal') as HTMLElement
+                        })
+                    }
                 }
             } catch (error) {
                 console.log(error);
@@ -161,6 +182,24 @@ const UpdateCustomer: FC<UpdateCustomerProps> = ({ customer }) => {
                                 </label>
                             )}
                         </div>
+                        {/* Image */}
+                        <div className="form-control w-full max-w-xs">
+                            <label className="label">
+                                <span className="label-text font-bold">Foto KTP</span>
+                            </label>
+                            <input
+                                type="file"
+                                className={`file-input file-input-bordered w-full max-w-xs ${formik.touched.id_card_number && formik.errors.id_card_number ? 'input-error' : ''}`}
+                                onChange={handleChange}
+                                onBlur={() => formik.setFieldTouched("id_card_photo", true)}
+                            />
+                        </div>
+                        {
+                            file ?
+                                <img src={file} alt="meeting" className="image-full my-5" />
+                                :
+                                <img src={customer.id_card_photo} alt="meeting" className="image-full my-5" />
+                        }
                         <button type='submit' className='btn btn-primary float-right'>Update</button>
                     </form>
                 </div>
