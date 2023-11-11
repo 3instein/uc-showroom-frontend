@@ -13,23 +13,34 @@ import { Truck } from '../../interfaces/Truck';
 import { Motorcycle } from '../../interfaces/Motorcycle';
 import { createOrder } from '../../api/OrderCRUD';
 
+/**
+ * Functional component for creating a new order.
+ *
+ * @component
+ * @returns {JSX.Element}
+ */
 const CreateOrder: FC = () => {
-
+    // Options for vehicle type select
     const vehicle_types: SelectOption[] = [
         { value: 'car', label: 'Mobil' },
         { value: 'truck', label: 'Truk' },
         { value: 'motorcycle', label: 'Motor' },
     ]
 
+    // Base URL for API calls
     const BASE_URL = 'http://localhost:3000/'
 
+    // Reference to the dialog element
     const dialogRef = useRef<HTMLDialogElement | null>(null);
+    // Reference to the modal element
     const modal = document.getElementById('create-order-modal')
+    // State variables for customer, vehicle, and type options
     const [customers, setCustomers] = useState<SelectOption[]>([])
     const [cars, setCars] = useState<SelectOption[]>([])
     const [trucks, setTrucks] = useState<SelectOption[]>([])
     const [motorcycles, setMotorcycles] = useState<SelectOption[]>([])
 
+    // Formik hook for form management and validation
     const formik = useFormik({
         initialValues: {
             customer: null,
@@ -43,12 +54,23 @@ const CreateOrder: FC = () => {
             vehicle_type: Yup.string().required('Tipe kendaraan harus diisi'),
         }),
         onSubmit: async (values) => {
-            const vehicle_id = values.vehicle_type === 'car' ? values.car : values.vehicle_type === 'truck' ? values.truck : values.motorcycle
-            const vehicle_type = values.vehicle_type === 'car' ? 'car' : values.vehicle_type === 'truck' ? 'truck' : 'motorcycle'
+            // Determine the vehicle ID and type based on the selected vehicle type
+            const vehicle_id =
+                values.vehicle_type === 'car' ? values.car :
+                    values.vehicle_type === 'truck' ? values.truck :
+                        values.motorcycle
+            const vehicle_type =
+                values.vehicle_type === 'car' ? 'car' :
+                    values.vehicle_type === 'truck' ? 'truck' :
+                        'motorcycle'
             try {
+                // Send a request to create a new order
                 const response = await createOrder(values.customer!, vehicle_type, vehicle_id!)
+                // Handle the response
                 if (response.status === 200) {
+                    // Refresh the orders data
                     mutate(BASE_URL + 'orders')
+                    // Display a success message
                     Swal.fire({
                         title: 'Berhasil!',
                         text: 'Order berhasil ditambahkan',
@@ -56,12 +78,14 @@ const CreateOrder: FC = () => {
                         confirmButtonText: 'OK',
                         target: document.getElementById('create-order-modal') as HTMLElement
                     }).then(() => {
+                        // Close the modal
                         const modal = document.getElementById('create-order-modal');
                         if (modal instanceof HTMLDialogElement) {
                             modal.close()
                         }
                     })
                 } else {
+                    // Display an error message
                     Swal.fire({
                         title: 'Gagal!',
                         text: 'Order gagal ditambahkan',
@@ -76,13 +100,16 @@ const CreateOrder: FC = () => {
         }
     })
 
+    // SWR hook for fetching data from the API
     const fetcher = (url: string) => axios.get(url).then(res => res.data)
 
+    // SWR hooks for customers, cars, trucks, and motorcycles data
     const { data: customersData = [], error: errorCustomers, isLoading: isLoadingCustomers } = useSWR(BASE_URL + 'customers', fetcher)
     const { data: carsData = [], error: errorCars, isLoading: isLoadingCars } = useSWR(BASE_URL + 'cars', fetcher)
     const { data: trucksData = [], error: errorTrucks, isLoading: isLoadingTrucks } = useSWR(BASE_URL + 'trucks', fetcher)
     const { data: motorcyclesData = [], error: errorMotorcycles, isLoading: isLoadingMotorcycles } = useSWR(BASE_URL + 'motorcycles', fetcher)
 
+    // useEffect to load customersData
     useEffect(() => {
         if (!isLoadingCustomers) {
             const customers = customersData.data.map((customer: Customer) => {
@@ -95,6 +122,7 @@ const CreateOrder: FC = () => {
         }
     }, [customersData])
 
+    // useEffects to load carsData
     useEffect(() => {
         if (!isLoadingCars) {
             const cars = carsData.data.map((car: Car) => {
@@ -107,6 +135,7 @@ const CreateOrder: FC = () => {
         }
     }, [carsData])
 
+    // useEffects to load trucksData
     useEffect(() => {
         if (!isLoadingTrucks) {
             const trucks = trucksData.data.map((truck: Truck) => {
@@ -119,6 +148,7 @@ const CreateOrder: FC = () => {
         }
     }, [trucksData])
 
+    // useEffects to load motorcyclesData
     useEffect(() => {
         if (!isLoadingMotorcycles) {
             const motorcycles = motorcyclesData.data.map((motorcycle: Motorcycle) => {
@@ -131,14 +161,18 @@ const CreateOrder: FC = () => {
         }
     }, [motorcyclesData])
 
+
+    // Event listener for modal close
     if (modal) {
         modal.addEventListener('close', () => {
             formik.resetForm()
         })
     }
 
+    // SWR error handling
     if (errorCustomers || errorCars || errorTrucks || errorMotorcycles) return <div>error...</div>
 
+    // Render the CreateOrder component
     return (
         <>
             {/* Open Modal Button */}

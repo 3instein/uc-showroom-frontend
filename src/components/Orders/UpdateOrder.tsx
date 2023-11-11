@@ -13,25 +13,39 @@ import { Motorcycle } from '../../interfaces/Motorcycle';
 import { updateOrder } from '../../api/OrderCRUD';
 import { Order } from '../../interfaces/Order';
 
+/**
+ * Interface for the props of the UpdateOrder component.
+ */
 interface UpdateOrderProps {
-    order: Order
+    order: Order;
 }
 
-const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
+/**
+ * Functional component for updating an existing order.
+ *
+ * @component
+ * @param {UpdateOrderProps} props - The properties of the component.
+ * @returns {JSX.Element}
+ */
 
+const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
+    // Options for the vehicle type select
     const vehicle_types: SelectOption[] = [
         { value: 'car', label: 'Mobil' },
         { value: 'truck', label: 'Truk' },
         { value: 'motorcycle', label: 'Motor' },
     ]
 
+    // Base URL for the API
     const BASE_URL = 'http://localhost:3000/'
 
+    // State variables for customer, vehicle, and type options
     const [customers, setCustomers] = useState<SelectOption[]>([])
     const [cars, setCars] = useState<SelectOption[]>([])
     const [trucks, setTrucks] = useState<SelectOption[]>([])
     const [motorcycles, setMotorcycles] = useState<SelectOption[]>([])
 
+    // Formik hook for form management and validation
     const formik = useFormik({
         initialValues: {
             customer: order.customer.id,
@@ -45,12 +59,21 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
             vehicle_type: Yup.string().required('Tipe kendaraan harus diisi'),
         }),
         onSubmit: async (values) => {
-            const vehicle_id = values.vehicle_type === 'car' ? values.car : values.vehicle_type === 'truck' ? values.truck : values.motorcycle
-            const vehicle_type = values.vehicle_type === 'car' ? 'car' : values.vehicle_type === 'truck' ? 'truck' : 'motorcycle'
+            // Determine the vehicle ID and type based on the selected vehicle type
+            const vehicle_id = values.vehicle_type === 'car' ? values.car :
+                values.vehicle_type === 'truck' ? values.truck
+                    : values.motorcycle
+            const vehicle_type = values.vehicle_type === 'car' ? 'car' :
+                values.vehicle_type === 'truck' ? 'truck' :
+                    'motorcycle'
             try {
+                // Make an API request to update the order
                 const response = await updateOrder(order.id, values.customer!, vehicle_type, vehicle_id!)
+                // Handle the response
                 if (response.status === 200) {
+                    // Refresh the orders data
                     mutate(BASE_URL + 'orders')
+                    // Show a success alert
                     Swal.fire({
                         title: 'Berhasil!',
                         text: 'Order berhasil diupdate',
@@ -58,12 +81,14 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
                         confirmButtonText: 'OK',
                         target: document.getElementById(`update-order-modal-${order.id}`) as HTMLElement
                     }).then(() => {
+                        // Close the modal
                         const modal = document.getElementById(`update-order-modal-${order.id}`);
                         if (modal instanceof HTMLDialogElement) {
                             modal.close()
                         }
                     })
                 } else {
+                    // Show an error alert
                     Swal.fire({
                         title: 'Gagal!',
                         text: 'Order gagal diupdate',
@@ -78,13 +103,16 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
         }
     })
 
+    // SWR hook for fetching data from the API
     const fetcher = (url: string) => axios.get(url).then(res => res.data)
 
+     // SWR hooks for customers, cars, trucks, and motorcycles data
     const { data: customersData = [], error: errorCustomers, isLoading: isLoadingCustomers } = useSWR(BASE_URL + 'customers', fetcher)
     const { data: carsData = [], error: errorCars, isLoading: isLoadingCars } = useSWR(BASE_URL + 'cars', fetcher)
     const { data: trucksData = [], error: errorTrucks, isLoading: isLoadingTrucks } = useSWR(BASE_URL + 'trucks', fetcher)
     const { data: motorcyclesData = [], error: errorMotorcycles, isLoading: isLoadingMotorcycles } = useSWR(BASE_URL + 'motorcycles', fetcher)
 
+    // Populate the options for the customers, cars, trucks, and motorcycles select
     useEffect(() => {
         if (!isLoadingCustomers) {
             const customers = customersData.data.map((customer: Customer) => {
