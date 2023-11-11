@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import Select from 'react-select';
 import { Customer } from '../../interfaces/Customer';
@@ -35,6 +35,9 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
         { value: 'truck', label: 'Truk' },
         { value: 'motorcycle', label: 'Motor' },
     ]
+
+    // Reference to the dialog element
+    const dialogRef = useRef<HTMLDialogElement | null>(null);
 
     // Base URL for the API
     const BASE_URL = 'http://localhost:3000/'
@@ -165,8 +168,8 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
 
     return (
         <>
-            <dialog id={`update-order-modal-${order.id}`} className="modal">
-                <div className="modal-box h-1/2 text-left">
+            <dialog id={`update-order-modal-${order.id}`} className="modal" ref={dialogRef}>
+                <div className="modal-box text-left">
                     <form method="dialog">
                         {/* Modal Close Button */}
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -194,6 +197,7 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
                                 }
                                 isSearchable={true}
                                 isLoading={isLoadingCustomers}
+                                menuPortalTarget={dialogRef.current}
                             />
                             {formik.touched.customer && formik.errors.customer && (
                                 <label className="label pt-1">
@@ -221,6 +225,7 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
                                     () => formik.values.vehicle_type === null && formik.setFieldTouched("vehicle_type", true)
                                 }
                                 isSearchable={true}
+                                menuPortalTarget={dialogRef.current}
                             />
                             {formik.touched.vehicle_type && formik.errors.vehicle_type && (
                                 <label className="label pt-1">
@@ -250,6 +255,7 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
                                         }
                                         isSearchable={true}
                                         isLoading={isLoadingCars}
+                                        menuPortalTarget={dialogRef.current}
                                     />
                                     {formik.touched.car && formik.errors.car && (
                                         <label className="label pt-1">
@@ -279,6 +285,7 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
                                             }
                                             isSearchable={true}
                                             isLoading={isLoadingTrucks}
+                                            menuPortalTarget={dialogRef.current}
                                         />
                                         {formik.touched.truck && formik.errors.truck && (
                                             <label className="label pt-1">
@@ -308,6 +315,7 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
                                             }
                                             isSearchable={true}
                                             isLoading={isLoadingMotorcycles}
+                                            menuPortalTarget={dialogRef.current}
                                         />
                                         {formik.touched.motorcycle && formik.errors.motorcycle && (
                                             <label className="label pt-1">
