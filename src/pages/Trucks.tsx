@@ -8,6 +8,7 @@ import { useDataTableStore } from '../stores/DataTableStore';
 import { Truck } from '../interfaces/Truck';
 import { deleteTruck } from '../api/TruckCRUD';
 import { CreateTruck } from '../components/Trucks/CreateTruck';
+import { UpdateTruck } from '../components/Trucks/UpdateTruck';
 
 const Trucks: FC = () => {
 
@@ -136,7 +137,7 @@ const Trucks: FC = () => {
                 apiURL='trucks'
                 actions={actions}
             />
-            {/* {showUpdateModal && <UpdateTruck truck={truck!} />} */}
+            {showUpdateModal && <UpdateTruck truck={truck!} />}
         </>
     )
 }
