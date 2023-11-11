@@ -19,7 +19,17 @@ export interface Car extends Vehicle {
     trunk_capacity: number;
 }
 
+/**
+ * Represents the response data for a car, including the basic details and additional information.
+ *
+ * @interface CarResponse
+ * @extends {Car}
+ */
 export interface CarResponse extends Car {
+    /**
+     * The complete data of the car.
+     * @type {Car}
+     */
     data: Car;
 }
 
