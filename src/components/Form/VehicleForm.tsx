@@ -2,7 +2,7 @@ import { FC, ChangeEvent } from 'react';
 import { nominalFormat } from '../../functions/general';
 interface VehicleFormProps {
     formik: any
-    type: 'Mobil' | 'Truck'
+    type: 'Mobil' | 'Truck' | 'Motor'
 }
 
 const VehicleForm: FC<VehicleFormProps> = ({ formik, type }) => {
