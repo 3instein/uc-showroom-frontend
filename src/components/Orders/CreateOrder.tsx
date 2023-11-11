@@ -54,6 +54,28 @@ const CreateOrder: FC = () => {
             vehicle_type: Yup.string().required('Tipe kendaraan harus diisi'),
         }),
         onSubmit: async (values) => {
+            switch (values.vehicle_type) {
+                case 'car':
+                    if (values.car === null) {
+                        formik.setFieldError('car', 'Mobil harus diisi')
+                        return
+                    }
+                    break
+                case 'truck':
+                    if (values.truck === null) {
+                        formik.setFieldError('truck', 'Truk harus diisi')
+                        return
+                    }
+                    break
+                case 'motorcycle':
+                    if (values.motorcycle === null) {
+                        formik.setFieldError('motorcycle', 'Motor harus diisi')
+                        return
+                    }
+                    break
+                default:
+                    break
+            }
             // Determine the vehicle ID and type based on the selected vehicle type
             const vehicle_id =
                 values.vehicle_type === 'car' ? values.car :
@@ -68,6 +90,7 @@ const CreateOrder: FC = () => {
                 const response = await createOrder(values.customer!, vehicle_type, vehicle_id!)
                 // Handle the response
                 if (response.status === 200) {
+                    formik.resetForm()
                     // Refresh the orders data
                     mutate(BASE_URL + 'orders')
                     // Display a success message
