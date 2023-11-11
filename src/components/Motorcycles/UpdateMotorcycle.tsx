@@ -38,16 +38,16 @@ const UpdateMotorcycle: FC<UpdateMotorcycleProps> = ({ motorcycle }) => {
         },
         // Validation schema for form fields
         validationSchema: Yup.object({
-            model: Yup.string().required('Model mobil harus diisi'),
-            year: Yup.number().required('Tahun mobil harus diisi'),
+            model: Yup.string().required('Model motor harus diisi'),
+            year: Yup.number().required('Tahun motor harus diisi'),
             seats: Yup.number().required('Jumlah kursi harus diisi'),
-            manufacturer: Yup.string().required('Merk mobil harus diisi'),
+            manufacturer: Yup.string().required('Merk motor harus diisi'),
             price: Yup.string()
-                .required('Harga mobil harus diisi')
+                .required('Harga motor harus diisi')
                 .test('is-numeric', 'Invalid format', value => {
                     return value ? !isNaN(Number(value.replace(/\./g, ''))) : true;
                 }),
-            trunk_capacity: Yup.number().required('Kapasitas bagasi mobil harus diisi'),
+            trunk_capacity: Yup.number().required('Kapasitas bagasi motor harus diisi'),
             fuel_capacity: Yup.number().required('Kapasitas bahan bakar motor harus diisi'),
         }),
         onSubmit: async (values) => {
@@ -109,9 +109,9 @@ const UpdateMotorcycle: FC<UpdateMotorcycleProps> = ({ motorcycle }) => {
                     {/* Modal Close Button */}
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                 </form>
-                <h3 className="font-bold text-lg">Form Update Mobil</h3>
+                <h3 className="font-bold text-lg">Form Update Motor</h3>
                 <form onSubmit={formik.handleSubmit} noValidate>
-                    <VehicleForm formik={formik} type='Mobil' />
+                    <VehicleForm formik={formik} type='Motor' />
                     {/* Trunk Capacity */}
                     <div className="form-control w-full max-w-xs">
                         <label className="label">

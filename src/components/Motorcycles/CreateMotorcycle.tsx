@@ -120,7 +120,7 @@ const CreateMotorcycle: FC = () => {
                         {/* Modal Close Button */}
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    <h3 className="font-bold text-lg">Form Tambah Mobil</h3>
+                    <h3 className="font-bold text-lg">Form Tambah Motor</h3>
                     <form onSubmit={formik.handleSubmit} noValidate>
                         <VehicleForm formik={formik} type='Motor' />
                         {/* Trunk Capacity */}
