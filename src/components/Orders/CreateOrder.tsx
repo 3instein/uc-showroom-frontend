@@ -90,7 +90,6 @@ const CreateOrder: FC = () => {
                 const response = await createOrder(values.customer!, vehicle_type, vehicle_id!)
                 // Handle the response
                 if (response.status === 200) {
-                    formik.resetForm()
                     // Refresh the orders data
                     mutate(BASE_URL + 'orders')
                     // Display a success message
@@ -102,6 +101,7 @@ const CreateOrder: FC = () => {
                         target: document.getElementById('create-order-modal') as HTMLElement
                     }).then(() => {
                         // Close the modal
+                        window.location.reload()
                         const modal = document.getElementById('create-order-modal');
                         if (modal instanceof HTMLDialogElement) {
                             modal.close()
@@ -230,7 +230,6 @@ const CreateOrder: FC = () => {
                                 key={1}
                                 options={customers}
                                 placeholder="Pilih Customer"
-                                value={customers?.find(option => option.value === formik.values.customer)}
                                 onChange={
                                     option => {
                                         formik.setFieldValue('customer', option?.value)
