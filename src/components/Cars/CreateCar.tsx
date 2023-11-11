@@ -8,13 +8,23 @@ import Swal from 'sweetalert2';
 import { createCar } from '../../api/CarCRUD';
 import { VehicleForm } from '../Form/VehicleForm';
 
+/**
+ * CreateCar Component
+ *
+ * This component provides a form to create a new car and adds it to the DataTable.
+ *
+ * @returns {JSX.Element} - The JSX element representing the CreateCar component.
+ */
 const CreateCar: FC = () => {
-
+    // Access the DataTable store to update the table data
     const { tableData, setTableData } = useDataTableStore()
 
+    // Get the modal element by ID
     const modal = document.getElementById('create-car-modal');
 
+    // Use Formik for form state management and validation
     const formik = useFormik({
+        // Initial form values
         initialValues: {
             model: '',
             year: '',
@@ -24,6 +34,7 @@ const CreateCar: FC = () => {
             fuel_type: '',
             trunk_capacity: '',
         },
+        // Form validation schema using Yup
         validationSchema: Yup.object({
             model: Yup.string().required('Model mobil harus diisi'),
             year: Yup.number().required('Tahun mobil harus diisi'),
@@ -37,7 +48,9 @@ const CreateCar: FC = () => {
             fuel_type: Yup.string().required('Jenis bahan bakar mobil harus diisi'),
             trunk_capacity: Yup.number().required('Kapasitas bagasi mobil harus diisi'),
         }),
+        // Form submission handler
         onSubmit: async (values) => {
+            // Creat a CreateCarType object from the form values
             const car: CreateCarType = {
                 model: values.model,
                 year: Number(values.year),
@@ -48,9 +61,12 @@ const CreateCar: FC = () => {
                 trunk_capacity: Number(values.trunk_capacity),
             }
             try {
+                // Make an API request to create a new car
                 const response = await createCar(car);
                 if (response.status === 200) {
+                    // Update the table data in the store with the new car
                     setTableData([...tableData, response.data.data as Car])
+                    // Show a success message
                     Swal.fire({
                         title: 'Berhasil!',
                         text: 'Mobil berhasil ditambahkan',
@@ -58,6 +74,7 @@ const CreateCar: FC = () => {
                         confirmButtonText: 'OK',
                         target: modal
                     }).then(() => {
+                        // Close the modal
                         if (modal instanceof HTMLDialogElement) {
                             modal.close()
                         }
@@ -77,6 +94,7 @@ const CreateCar: FC = () => {
         }
     })
 
+    // Add an event listener to reset the form when the modal is closed
     if (modal) {
         modal.addEventListener('close', () => {
             formik.resetForm()
