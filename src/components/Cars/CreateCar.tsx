@@ -77,6 +77,12 @@ const CreateCar: FC = () => {
         }
     })
 
+    if (modal) {
+        modal.addEventListener('close', () => {
+            formik.resetForm()
+        })
+    }
+
     return (
         <>
             {/* Open Modal Button */}

@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { ChangeEvent, FC, useState } from 'react';
+import { ChangeEvent, FC, useRef, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { createCustomer } from '../../api/CustomerCRUD';
 import { CreateCustomer as CreateCustomerType, Customer } from '../../interfaces/Customer';
@@ -11,6 +11,8 @@ import { insertCustomerResource } from '../../api/CustomerResource';
 const CreateCustomer: FC = () => {
 
     const { tableData, setTableData } = useDataTableStore()
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [file, setFile] = useState<string | null>(null);
 
@@ -82,6 +84,16 @@ const CreateCustomer: FC = () => {
             }
         }
     })
+
+    // detect dialog close
+    const dialog = document.getElementById('create-customer-modal');
+    if (dialog) {
+        dialog.addEventListener('close', () => {
+            formik.resetForm()
+            setFile(null)
+            fileInputRef.current?.value && (fileInputRef.current.value = "")
+        })
+    }
 
     return (
         <>
@@ -192,6 +204,7 @@ const CreateCustomer: FC = () => {
                             </label>
                             <input
                                 type="file"
+                                ref={fileInputRef}
                                 className={`file-input file-input-bordered w-full max-w-xs ${formik.touched.id_card_number && formik.errors.id_card_number ? 'input-error' : ''}`}
                                 onChange={handleChange}
                                 onBlur={() => formik.setFieldTouched("id_card_photo", true)}

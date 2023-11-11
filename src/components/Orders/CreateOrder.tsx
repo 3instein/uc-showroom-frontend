@@ -23,6 +23,7 @@ const CreateOrder: FC = () => {
 
     const BASE_URL = 'http://localhost:3000/'
 
+    const modal = document.getElementById('create-order-modal')
     const [customers, setCustomers] = useState<SelectOption[]>([])
     const [cars, setCars] = useState<SelectOption[]>([])
     const [trucks, setTrucks] = useState<SelectOption[]>([])
@@ -128,6 +129,12 @@ const CreateOrder: FC = () => {
             setMotorcycles(motorcycles)
         }
     }, [motorcyclesData])
+
+    if (modal) {
+        modal.addEventListener('close', () => {
+            formik.resetForm()
+        })
+    }
 
     if (errorCustomers || errorCars || errorTrucks || errorMotorcycles) return <div>error...</div>
 
