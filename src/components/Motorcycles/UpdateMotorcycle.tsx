@@ -12,11 +12,20 @@ interface UpdateMotorcycleProps {
     motorcycle: Motorcycle
 }
 
+/**
+ * Functional component for updating motorcycle details.
+ *
+ * @component
+ * @param {UpdateMotorcycleProps} props - Props containing the motorcycle details.
+ * @returns {JSX.Element}
+ */
 const UpdateMotorcycle: FC<UpdateMotorcycleProps> = ({ motorcycle }) => {
-
+    // Reference to the modal element
     const modal = document.getElementById(`update-motorcycle-modal-${motorcycle.id}`);
+    // Access the DataTable store to update the table data
     const { tableData, setTableData } = useDataTableStore()
 
+    // Formik hook for form management and validation
     const formik = useFormik({
         initialValues: {
             model: motorcycle.model,
@@ -27,6 +36,7 @@ const UpdateMotorcycle: FC<UpdateMotorcycleProps> = ({ motorcycle }) => {
             trunk_capacity: motorcycle.trunk_capacity,
             fuel_capacity: motorcycle.fuel_capacity,
         },
+        // Validation schema for form fields
         validationSchema: Yup.object({
             model: Yup.string().required('Model mobil harus diisi'),
             year: Yup.number().required('Tahun mobil harus diisi'),
@@ -41,6 +51,7 @@ const UpdateMotorcycle: FC<UpdateMotorcycleProps> = ({ motorcycle }) => {
             fuel_capacity: Yup.number().required('Kapasitas bahan bakar motor harus diisi'),
         }),
         onSubmit: async (values) => {
+            // Construct updated motorcycle object
             const updatedMotorcycle: Motorcycle = {
                 id: motorcycle.id,
                 model: values.model,
@@ -52,14 +63,17 @@ const UpdateMotorcycle: FC<UpdateMotorcycleProps> = ({ motorcycle }) => {
                 fuel_capacity: Number(values.fuel_capacity),
             }
             try {
+                // Make an API request to update the motorcycle
                 const response = await updateMotorcycle(updatedMotorcycle);
                 if (response.status === 200) {
+                    // Update the table data in the store with the updated motorcycle
                     setTableData(tableData.map((motorcycle) => {
                         if (motorcycle.id === updatedMotorcycle.id) {
                             return updatedMotorcycle
                         }
                         return motorcycle
                     }))
+                    // Show success message
                     Swal.fire({
                         title: 'Berhasil!',
                         text: 'Motor berhasil diupdate',
@@ -72,6 +86,7 @@ const UpdateMotorcycle: FC<UpdateMotorcycleProps> = ({ motorcycle }) => {
                         }
                     })
                 } else {
+                    // Show error message
                     Swal.fire({
                         title: 'Gagal!',
                         text: 'Motor gagal diupdate',
@@ -85,6 +100,8 @@ const UpdateMotorcycle: FC<UpdateMotorcycleProps> = ({ motorcycle }) => {
             }
         }
     })
+
+    // Render the UpdateMotorcycle component
     return (
         <dialog id={`update-motorcycle-modal-${motorcycle.id}`} className="modal">
             <div className="modal-box text-left">

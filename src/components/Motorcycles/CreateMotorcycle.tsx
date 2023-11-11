@@ -8,12 +8,20 @@ import { VehicleForm } from '../Form/VehicleForm';
 import { CreateMotorcycle as CreateMotorcycleType, Motorcycle } from '../../interfaces/Motorcycle';
 import { createMotorcycle } from '../../api/MotorcycleCRUD';
 
+/**
+ * Functional component for creating a new motorcycle.
+ *
+ * @component
+ * @returns {JSX.Element}
+ */
 const CreateMotorcycle: FC = () => {
-
+    // Access the DataTable store to update the table data
     const { tableData, setTableData } = useDataTableStore()
 
+    // Access the modal element
     const modal = document.getElementById('create-motorcycle-modal');
 
+    // Formik hook for form management and validation
     const formik = useFormik({
         initialValues: {
             model: '',
@@ -24,6 +32,7 @@ const CreateMotorcycle: FC = () => {
             trunk_capacity: '',
             fuel_capacity: '',
         },
+        // Validation schema for form fields
         validationSchema: Yup.object({
             model: Yup.string().required('Model motor harus diisi'),
             year: Yup.number().required('Tahun motor harus diisi'),
@@ -38,6 +47,7 @@ const CreateMotorcycle: FC = () => {
             fuel_capacity: Yup.number().required('Kapasitas bahan bakar motor harus diisi'),
         }),
         onSubmit: async (values) => {
+            // Construct updated motorcycle object
             const motorcycle: CreateMotorcycleType = {
                 model: values.model,
                 year: Number(values.year),
@@ -48,9 +58,12 @@ const CreateMotorcycle: FC = () => {
                 fuel_capacity: Number(values.fuel_capacity),
             }
             try {
+                // Make an API request to create a new motorcycle
                 const response = await createMotorcycle(motorcycle);
                 if (response.status === 200) {
+                    // Update the table data in the store with the new motorcycle
                     setTableData([...tableData, response.data.data as Motorcycle])
+                    // Show success alert
                     Swal.fire({
                         title: 'Berhasil!',
                         text: 'Motor berhasil ditambahkan',
@@ -63,6 +76,7 @@ const CreateMotorcycle: FC = () => {
                         }
                     })
                 } else {
+                    // Show error alert
                     Swal.fire({
                         title: 'Gagal!',
                         text: 'Motor gagal ditambahkan',
@@ -77,12 +91,14 @@ const CreateMotorcycle: FC = () => {
         }
     })
 
+    // Event listener for modal close
     if (modal) {
         modal.addEventListener('close', () => {
             formik.resetForm()
         })
     }
 
+    // Render the CreateMotorcycle component
     return (
         <>
             {/* Open Modal Button */}
