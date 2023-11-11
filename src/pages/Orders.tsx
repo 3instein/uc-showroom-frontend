@@ -7,6 +7,7 @@ import { useDataTableStore } from '../stores/DataTableStore';
 import { Order } from '../interfaces/Order';
 import { CreateOrder } from '../components/Orders/CreateOrder';
 import { deleteOrder } from '../api/OrderCRUD';
+import { customNumberFormat } from '../functions/general';
 
 const Orders: FC = () => {
 
@@ -64,7 +65,7 @@ const Orders: FC = () => {
         },
         {
             name: "Payment",
-            selector: row => 'Rp. ' + row.vehicle_price
+            selector: row => row.vehicle_price && customNumberFormat(row.vehicle_price),
         },
         // {
         //     name: "Address",

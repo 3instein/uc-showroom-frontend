@@ -2,9 +2,13 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:3000/orders";
 
-// export const createCustomer = async (customer: CreateCustomer) => {
-//     return await axios.post(`${BASE_URL}/orders`, customer);
-// }
+export const createOrder = async (customer_id: number, vehicle_type: 'car' | 'truck' | 'motorcycle', vehicle_id: number) => {
+    return await axios.post(`${BASE_URL}`, {
+        customer_id,
+        vehicle_type,
+        vehicle_id
+    });
+}
 
 // export const updateCustomer = async (customer: Customer) => {
 //     return await axios.put(`${BASE_URL}/orders/${customer.id}`, customer);
