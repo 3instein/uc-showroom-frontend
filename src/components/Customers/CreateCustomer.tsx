@@ -60,7 +60,7 @@ const CreateCustomer: FC = () => {
         }),
         onSubmit: async (values) => {
             try {
-                 // Upload the customer ID card photo to a resource and get the resource response
+                // Upload the customer ID card photo to a resource and get the resource response
                 const resourceResponse = await insertCustomerResource(values.id_card_photo);
                 if (resourceResponse.status === 200) {
                     // If resource upload is successful, proceed to create the customer
@@ -229,12 +229,17 @@ const CreateCustomer: FC = () => {
                             <input
                                 type="file"
                                 ref={fileInputRef}
-                                className={`file-input file-input-bordered w-full max-w-xs ${formik.touched.id_card_number && formik.errors.id_card_number ? 'input-error' : ''}`}
+                                className={`file-input file-input-bordered w-full max-w-xs ${formik.touched.id_card_photo && formik.errors.id_card_photo ? 'input-error' : ''}`}
                                 onChange={handleChange}
                                 onBlur={() => formik.setFieldTouched("id_card_photo", true)}
                             />
                         </div>
                         {file && <img src={file} alt="meeting" className="image-full my-5" />}
+                        {formik.touched.id_card_photo && formik.errors.id_card_photo && (
+                            <label className="label pt-1">
+                                <span className="label-text text-xs text-red-600">{formik.errors.id_card_photo}</span>
+                            </label>
+                        )}
                         <button type='submit' className='btn btn-primary float-right'>Tambah</button>
                     </form>
                 </div>
