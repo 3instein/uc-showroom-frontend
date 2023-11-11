@@ -10,3 +10,7 @@ export const createCustomer = async (customer: CreateCustomer) => {
 export const updateCustomer = async (customer: Customer) => {
     return await axios.put(`${BASE_URL}/customers/${customer.id}`, customer);
 }
+
+export const deleteCustomer = async (id: number) => {
+    return await axios.delete(`${BASE_URL}/customers/${id}`);
+}

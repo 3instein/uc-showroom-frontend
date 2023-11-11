@@ -5,11 +5,54 @@ import { Customer } from '../interfaces/Customer';
 import { CreateCustomer } from '../components/Customers/CreateCustomer';
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
 import { UpdateCustomer } from '../components/Customers/UpdateCustomer';
+import Swal from 'sweetalert2';
+import { deleteCustomer } from '../api/CustomerCRUD';
+import { useDataTableStore } from '../stores/DataTableStore';
 
 const Customers: FC = () => {
 
     const [customer, setCustomer] = useState<Customer>()
     const [showUpdateModal, setShowUpdateModal] = useState(false)
+    const { tableData, setTableData } = useDataTableStore()
+
+    const handleDelete = (customer: Customer) => {
+        Swal.fire({
+            title: `Apakah anda yakin ingin menghapus ${customer.name}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await deleteCustomer(customer.id)
+                    if (response.status === 200) {
+                        setTableData(tableData.filter((customer) => customer.id !== response.data.data.id))
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Customer berhasil dihapus',
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Customer gagal dihapus',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                        })
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Customer gagal dihapus',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    })
+                }
+            }
+        })
+    }
 
     const tableColumns: TableColumn<Customer>[] = [
         {
@@ -38,7 +81,9 @@ const Customers: FC = () => {
                     }}>
                         <AiFillEdit />
                     </button>
-                    <button className="btn btn-outline btn-error"><AiFillDelete /></button>
+                    <button className="btn btn-outline btn-error" onClick={() => { handleDelete(row) }}>
+                        <AiFillDelete />
+                    </button>
                 </div>
         }
     ]
