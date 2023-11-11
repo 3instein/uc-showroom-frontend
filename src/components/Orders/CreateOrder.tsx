@@ -213,7 +213,7 @@ const CreateOrder: FC = () => {
                 Tambah
             </button>
             <dialog id="create-order-modal" className="modal" ref={dialogRef}>
-                <div className="modal-box text-left">
+                <div className="modal-box">
                     <form method="dialog">
                         {/* Modal Close Button */}
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
