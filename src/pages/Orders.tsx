@@ -1,4 +1,6 @@
+// Import necessary dependencies from React
 import { FC, useState, useEffect } from 'react';
+// Import components and utilities
 import { MasterDataTable } from '../components/DataTable/MasterDataTable';
 import { ExpanderComponentProps, TableColumn } from 'react-data-table-component';
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
@@ -10,19 +12,22 @@ import { deleteOrder } from '../api/OrderCRUD';
 import { customNumberFormat } from '../functions/general';
 import { UpdateOrder } from '../components/Orders/UpdateOrder';
 
+// Define props for the expandable row component
 interface Props extends ExpanderComponentProps<Order> {
     // currently, props that extend ExpanderComponentProps must be set to optional.
     name?: string;
 }
 
+// Define the ExpandableRowComponent functional component
 const ExpandadbleRowComponent: FC<Props> = ({ data }) => {
-
+    // Extract relevant data based on the vehicle type
     const vehicle_type = data.vehicle_type === 'car' ? 'Mobil' : data.vehicle_type === 'truck' ? 'Truk' : 'Motor'
     const vehicle_model = data.vehicle_type === 'car' ? data.car?.model : data.vehicle_type === 'truck' ? data.truck?.model : data.motorcycle?.model
     const vehicle_year = data.vehicle_type === 'car' ? data.car?.year : data.vehicle_type === 'truck' ? data.truck?.year : data.motorcycle?.year
     const vehicle_seats = data.vehicle_type === 'car' ? data.car?.seats : data.vehicle_type === 'truck' ? data.truck?.seats : data.motorcycle?.seats
     const vehicle_manufacturer = data.vehicle_type === 'car' ? data.car?.manufacturer : data.vehicle_type === 'truck' ? data.truck?.manufacturer : data.motorcycle?.manufacturer
 
+    // Return the JSX for the expandable row
     return (
         <>
             <div className="float-left text-left p-5">
@@ -63,13 +68,18 @@ const ExpandadbleRowComponent: FC<Props> = ({ data }) => {
     )
 }
 
+// Define the Orders functional component
 const Orders: FC = () => {
-
+    // State variables
     const [order, setOrder] = useState<Order>()
     const [showUpdateModal, setShowUpdateModal] = useState(false)
+
+    // Access the tableData and setTableData functions from the DataTableStore
     const { tableData, setTableData } = useDataTableStore()
 
+    // Handle order deletion
     const handleDelete = (order: Order) => {
+        // Display a confirmation dialog using Swal
         Swal.fire({
             title: `Apakah anda yakin ingin menghapus Order - ${order.customer.name}?`,
             icon: 'warning',
@@ -80,8 +90,11 @@ const Orders: FC = () => {
             if (result.isConfirmed) {
                 try {
                     const response = await deleteOrder(order.id, order.vehicle_type)
+                    // Handle the response from the server
                     if (response.status === 200) {
+                        // Update the tableData state to reflect the deletion
                         setTableData(tableData.filter((order) => order.id !== response.data.data.id))
+                        // Display a success message
                         Swal.fire({
                             title: 'Berhasil!',
                             text: 'Order berhasil dihapus',
@@ -89,6 +102,7 @@ const Orders: FC = () => {
                             confirmButtonText: 'OK',
                         })
                     } else {
+                        // Display an error message if deletion fails
                         Swal.fire({
                             title: 'Gagal!',
                             text: 'Order gagal dihapus',
@@ -97,6 +111,7 @@ const Orders: FC = () => {
                         })
                     }
                 } catch (error) {
+                    // Display an error message if the order has existing order data
                     Swal.fire({
                         title: 'Gagal!',
                         text: 'Order gagal dihapus',
@@ -108,6 +123,7 @@ const Orders: FC = () => {
         })
     }
 
+    // Define table columns with specific renderings
     const tableColumns: TableColumn<Order>[] = [
         {
             name: "Customer Name",
@@ -121,6 +137,7 @@ const Orders: FC = () => {
             name: "Payment",
             selector: row => row.vehicle_price && 'Rp. ' + customNumberFormat(row.vehicle_price),
         },
+        // Custom cell rendering for the Actions column
         {
             name: "Actions",
             cell: (row) =>
@@ -138,20 +155,24 @@ const Orders: FC = () => {
         }
     ]
 
+    // Actions to be displayed above the table
     const actions = [
         <CreateOrder />
     ]
 
+    // Effect for handling modal visibility
     useEffect(() => {
+        // Check if the modal should be shown
         if (showUpdateModal) {
             const updateBannerModal = document.getElementById(`update-order-modal-${order?.id}`);
 
+            // Check if the modal exists
             if (updateBannerModal) {
                 if (updateBannerModal instanceof HTMLDialogElement) {
                     updateBannerModal.showModal();
                 }
 
-                // This listener sets showChat to false when the modal is closed
+                // Event listener for modal close
                 const handleModalHide = () => {
                     setShowUpdateModal(false);
                 };
@@ -159,13 +180,15 @@ const Orders: FC = () => {
                 // Attach the event listener
                 updateBannerModal.addEventListener('close', handleModalHide);
 
-                // Clean up the listener when the component is unmounted or if showChat/chatHistory changes
+                // Clean up the listener when the component is unmounted or if showUpdateModal changes
                 return () => {
                     updateBannerModal.removeEventListener('close', handleModalHide);
                 };
             }
         }
     }, [showUpdateModal, setShowUpdateModal]);
+
+    // Render the MasterDataTable with specified columns, API URL, and actions
     return (
         <>
             <MasterDataTable

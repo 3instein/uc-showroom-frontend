@@ -1,4 +1,6 @@
+// Import necessary dependencies from React
 import { FC, useState, useEffect } from 'react';
+// Import components and utilities
 import { MasterDataTable } from '../components/DataTable/MasterDataTable';
 import { TableColumn } from 'react-data-table-component';
 import { customNumberFormat } from '../functions/general';
@@ -10,14 +12,18 @@ import { deleteMotorcycle } from '../api/Motorcycle';
 import { CreateMotorcycle } from '../components/Motorcycles/CreateMotorcycle';
 import { UpdateMotorcycle } from '../components/Motorcycles/UpdateMotorcycle';
 
+// Define the Motorcycles functional component
 const Motorcycles: FC = () => {
-
+    // State variables
     const [motorcycle, setMotorCycle] = useState<Motorcycle>()
     const [showUpdateModal, setShowUpdateModal] = useState(false)
 
+    // Access the tableData and setTableData functions from the DataTableStore
     const { tableData, setTableData } = useDataTableStore()
 
+    // Handle motorcycle deletion
     const handleDelete = (motorcycle: Motorcycle) => {
+        // Display a confirmation dialog using Swal
         Swal.fire({
             title: `Apakah anda yakin ingin menghapus Motor ${motorcycle.model} tahun ${motorcycle.year} - ${motorcycle.manufacturer}?`,
             icon: 'warning',
@@ -28,8 +34,11 @@ const Motorcycles: FC = () => {
             if (result.isConfirmed) {
                 try {
                     const response = await deleteMotorcycle(motorcycle.id)
+                    // Handle the response from the server
                     if (response.status === 200) {
+                        // Update the tableData state to reflect the deletion
                         setTableData(tableData.filter((motorcycle) => motorcycle.id !== response.data.data.id))
+                        // Display a success message
                         Swal.fire({
                             title: 'Berhasil!',
                             text: 'Motor berhasil dihapus',
@@ -37,6 +46,7 @@ const Motorcycles: FC = () => {
                             confirmButtonText: 'OK',
                         })
                     } else {
+                        // Display an error message if deletion fails
                         Swal.fire({
                             title: 'Gagal!',
                             text: 'Motor gagal dihapus',
@@ -45,6 +55,7 @@ const Motorcycles: FC = () => {
                         })
                     }
                 } catch (error) {
+                    // Display an error message if the motorcycle has existing order data
                     Swal.fire({
                         title: 'Gagal!',
                         text: 'Motor ini telah mempunyai data pesanan!',
@@ -56,6 +67,7 @@ const Motorcycles: FC = () => {
         })
     }
 
+    // Define the table columns for the DataTable
     const tableColumns: TableColumn<Motorcycle>[] = [
         {
             name: "Model",
@@ -85,6 +97,7 @@ const Motorcycles: FC = () => {
             name: "Price",
             selector: row => row.price && 'Rp. ' + customNumberFormat(row.price),
         },
+        // Custom cell rendering for actions column 
         {
             name: "Actions",
             cell: (row) =>
@@ -102,20 +115,25 @@ const Motorcycles: FC = () => {
         }
     ]
 
+    // Actions to be displayed above the table
     const actions = [
         <CreateMotorcycle />
     ]
 
+    // Display the update modal when showUpdateModal is true
     useEffect(() => {
+        // Check if the update modal should be shown
         if (showUpdateModal) {
             const updateBannerModal = document.getElementById(`update-motorcycle-modal-${motorcycle?.id}`);
 
+            // Check if the modal element exists
             if (updateBannerModal) {
                 if (updateBannerModal instanceof HTMLDialogElement) {
+                    // Show the modal
                     updateBannerModal.showModal();
                 }
 
-                // This listener sets showChat to false when the modal is closed
+                // Event listener for modal close
                 const handleModalHide = () => {
                     setShowUpdateModal(false);
                 };
@@ -123,13 +141,15 @@ const Motorcycles: FC = () => {
                 // Attach the event listener
                 updateBannerModal.addEventListener('close', handleModalHide);
 
-                // Clean up the listener when the component is unmounted or if showChat/chatHistory changes
+                // Clean up the listener when the component is unmounted or if showUpdateModal changes
                 return () => {
                     updateBannerModal.removeEventListener('close', handleModalHide);
                 };
             }
         }
     }, [showUpdateModal, setShowUpdateModal]);
+
+    // Render the MasterDataTable with specified columns, API URL, and actions
     return (
         <>
             <MasterDataTable

@@ -1,4 +1,6 @@
+// Import necessary dependencies from React
 import { FC, useState, useEffect } from 'react';
+// Import components and utilities
 import { MasterDataTable } from '../components/DataTable/MasterDataTable';
 import { TableColumn } from 'react-data-table-component';
 import { Customer } from '../interfaces/Customer';
@@ -9,13 +11,16 @@ import Swal from 'sweetalert2';
 import { deleteCustomer } from '../api/CustomerCRUD';
 import { useDataTableStore } from '../stores/DataTableStore';
 
+// Define the Customers functional component
 const Customers: FC = () => {
-
+    // State variables
     const [customer, setCustomer] = useState<Customer>()
     const [showUpdateModal, setShowUpdateModal] = useState(false)
     const { tableData, setTableData } = useDataTableStore()
 
+    // Handle customer deletion
     const handleDelete = (customer: Customer) => {
+        // Display a confirmation dialog using Swal
         Swal.fire({
             title: `Apakah anda yakin ingin menghapus ${customer.name}?`,
             icon: 'warning',
@@ -26,8 +31,11 @@ const Customers: FC = () => {
             if (result.isConfirmed) {
                 try {
                     const response = await deleteCustomer(customer.id)
+                    // Handle the response from the server
                     if (response.status === 200) {
+                        // Update the tableData state to reflect the deletion
                         setTableData(tableData.filter((customer) => customer.id !== response.data.data.id))
+                        // Display a success message
                         Swal.fire({
                             title: 'Berhasil!',
                             text: 'Customer berhasil dihapus',
@@ -35,6 +43,7 @@ const Customers: FC = () => {
                             confirmButtonText: 'OK',
                         })
                     } else {
+                        // Display an error message if deletion fails
                         Swal.fire({
                             title: 'Gagal!',
                             text: 'Customer gagal dihapus',
@@ -43,6 +52,7 @@ const Customers: FC = () => {
                         })
                     }
                 } catch (error) {
+                    // Display an error message if the customer has existing orders
                     Swal.fire({
                         title: 'Gagal!',
                         text: 'Customer ini telah mempunyai pesanan!',
@@ -54,6 +64,7 @@ const Customers: FC = () => {
         })
     }
 
+    // Define table columns with specific renderings
     const tableColumns: TableColumn<Customer>[] = [
         {
             name: "Name",
@@ -75,6 +86,7 @@ const Customers: FC = () => {
             name: "ID Card Image",
             cell: (row) => <img src={row.id_card_photo} alt="id_card_image" className="h-20" />
         },
+        // Custom cell rendering for actions column
         {
             name: "Actions",
             cell: (row) =>
@@ -92,20 +104,25 @@ const Customers: FC = () => {
         }
     ]
 
+    // Actions to be displayed above the table
     const actions = [
         <CreateCustomer />
     ]
 
+    // Effect for handling modal visibility
     useEffect(() => {
+        // Check if the update modal should be shown
         if (showUpdateModal) {
             const updateBannerModal = document.getElementById(`update-customer-modal-${customer?.id}`);
 
+            // Check if the modal element exists
             if (updateBannerModal) {
                 if (updateBannerModal instanceof HTMLDialogElement) {
+                    // Show the modal
                     updateBannerModal.showModal();
                 }
 
-                // This listener sets showChat to false when the modal is closed
+                // Event listener for modal close
                 const handleModalHide = () => {
                     setShowUpdateModal(false);
                 };
@@ -113,13 +130,15 @@ const Customers: FC = () => {
                 // Attach the event listener
                 updateBannerModal.addEventListener('close', handleModalHide);
 
-                // Clean up the listener when the component is unmounted or if showChat/chatHistory changes
+                // Clean up the listener when the component is unmounted or if showUpdateModal changes
                 return () => {
                     updateBannerModal.removeEventListener('close', handleModalHide);
                 };
             }
         }
     }, [showUpdateModal, setShowUpdateModal]);
+
+    // Render the MasterDataTable with specified columns, API URL, and actions
     return (
         <>
             <MasterDataTable
