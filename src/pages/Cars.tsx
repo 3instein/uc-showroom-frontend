@@ -29,7 +29,7 @@ const Cars: FC = () => {
                 try {
                     const response = await deleteCar(car.id)
                     if (response.status === 200) {
-                        setTableData(tableData.filter((customer) => customer.id !== response.data.data.id))
+                        setTableData(tableData.filter((car) => car.id !== response.data.data.id))
                         Swal.fire({
                             title: 'Berhasil!',
                             text: 'Mobil berhasil dihapus',
