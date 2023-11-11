@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { Car, CreateCar } from "../interfaces/Car";
+import { Car, CarResponse, CreateCar } from "../interfaces/Car";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -7,10 +7,10 @@ const BASE_URL = "http://localhost:3000";
  * Creates a new car with the provided information.
  *
  * @param {CreateCar} car - The car data for creating a new car.
- * @returns {Promise<AxiosResponse<Car>>} - A Promise that resolves to the AxiosResponse containing the created car.
+ * @returns {Promise<AxiosResponse<CarResponse>>} - A Promise that resolves to the AxiosResponse containing the created car.
  * @throws {Error} - Throws an error if the creation process fails.
  */
-export const createCar = async (car: CreateCar): Promise<AxiosResponse<Car>> => {
+export const createCar = async (car: CreateCar): Promise<AxiosResponse<CarResponse>> => {
     try {
         const response = await axios.post(`${BASE_URL}/cars`, car);
         return response;

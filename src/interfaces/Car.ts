@@ -19,6 +19,10 @@ export interface Car extends Vehicle {
     trunk_capacity: number;
 }
 
+export interface CarResponse extends Car {
+    data: Car;
+}
+
 /**
  * Represents the data required to create a new car, excluding the unique identifier.
  *
