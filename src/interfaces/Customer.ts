@@ -5,3 +5,5 @@ export interface Customer {
     phone: string
     id_card_number: string
 }
+
+export type CreateCustomer = Omit<Customer, "id">;

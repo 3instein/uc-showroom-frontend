@@ -2,8 +2,14 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { FC } from 'react';
 import { FaPlus } from 'react-icons/fa';
+import { createCustomer } from '../../api/CustomerCRUD';
+import { CreateCustomer as CreateCustomerType, Customer } from '../../interfaces/Customer';
+import { useDataTableStore } from '../../stores/DataTableStore';
+import Swal from 'sweetalert2';
 
 const CreateCustomer: FC = () => {
+
+    const { tableData, setTableData } = useDataTableStore()
 
     const formik = useFormik({
         initialValues: {
@@ -19,7 +25,40 @@ const CreateCustomer: FC = () => {
             id_card_number: Yup.string().required('Nomor KTP harus diisi'),
         }),
         onSubmit: async (values) => {
-
+            const customer: CreateCustomerType = {
+                name: values.name,
+                address: values.address,
+                phone: values.phone,
+                id_card_number: values.id_card_number,
+            }
+            try {
+                const response = await createCustomer(customer);
+                if (response.status === 200) {
+                    setTableData([...tableData, response.data.data as Customer])
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: 'Customer berhasil ditambahkan',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        target: document.getElementById('create-customer-modal') as HTMLElement
+                    }).then(() => {
+                        const modal = document.getElementById('create-customer-modal');
+                        if (modal instanceof HTMLDialogElement) {
+                            modal.close()
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Customer gagal ditambahkan',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                        target: document.getElementById('create-customer-modal') as HTMLElement
+                    })
+                }
+            } catch (error) {
+                console.log(error);
+            }
         }
     })
 
