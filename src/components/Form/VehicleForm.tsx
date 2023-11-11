@@ -1,11 +1,38 @@
 import { FC, ChangeEvent } from 'react';
 import { nominalFormat } from '../../functions/general';
+/**
+ * Props for the VehicleForm component.
+ *
+ * @interface VehicleFormProps
+ */
 interface VehicleFormProps {
-    formik: any
-    type: 'Mobil' | 'Truck' | 'Motor'
+    /**
+     * The formik instance to handle form state.
+     * @type {any}
+     */
+    formik: any;
+
+    /**
+     * The type of the vehicle, e.g., 'Mobil', 'Truck', or 'Motor'.
+     * @type {'Mobil' | 'Truck' | 'Motor'}
+     */
+    type: 'Mobil' | 'Truck' | 'Motor';
 }
 
+/**
+ * A form component for capturing vehicle details such as model, year, seats, manufacturer, and price.
+ *
+ * @component
+ * @param {VehicleFormProps} props - The props for the VehicleForm component.
+ * @returns {JSX.Element}
+ */
+
 const VehicleForm: FC<VehicleFormProps> = ({ formik, type }) => {
+    /**
+     * Handles the change event for the price input field and formats the value.
+     *
+     * @param {ChangeEvent<HTMLInputElement>} e - The change event.
+     */
     const handleNominalChange = (e: ChangeEvent<HTMLInputElement>) => {
         const formattedValue = nominalFormat(e.target.value);
         formik.setFieldValue('price', formattedValue);
