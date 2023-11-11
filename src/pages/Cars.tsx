@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { MasterDataTable } from '../components/DataTable/MasterDataTable';
 import { TableColumn } from 'react-data-table-component';
 import { Car } from '../interfaces/Car';
@@ -8,13 +8,14 @@ import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import { deleteCar } from '../api/CarCRUD';
 import { useDataTableStore } from '../stores/DataTableStore';
+import { UpdateCar } from '../components/Cars/UpdateCar';
 
 const Cars: FC = () => {
 
     const [car, setCar] = useState<Car>()
     const [showUpdateModal, setShowUpdateModal] = useState(false)
 
-    const {tableData, setTableData} = useDataTableStore()
+    const { tableData, setTableData } = useDataTableStore()
 
     const handleDelete = (car: Car) => {
         Swal.fire({
@@ -104,12 +105,40 @@ const Cars: FC = () => {
     const actions = [
         <CreateCar />
     ]
+
+    useEffect(() => {
+        if (showUpdateModal) {
+            const updateBannerModal = document.getElementById(`update-car-modal-${car?.id}`);
+
+            if (updateBannerModal) {
+                if (updateBannerModal instanceof HTMLDialogElement) {
+                    updateBannerModal.showModal();
+                }
+
+                // This listener sets showChat to false when the modal is closed
+                const handleModalHide = () => {
+                    setShowUpdateModal(false);
+                };
+
+                // Attach the event listener
+                updateBannerModal.addEventListener('close', handleModalHide);
+
+                // Clean up the listener when the component is unmounted or if showChat/chatHistory changes
+                return () => {
+                    updateBannerModal.removeEventListener('close', handleModalHide);
+                };
+            }
+        }
+    }, [showUpdateModal, setShowUpdateModal]);
     return (
-        <MasterDataTable
-            tableColumns={tableColumns}
-            apiURL='cars'
-            actions={actions}
-        />
+        <>
+            <MasterDataTable
+                tableColumns={tableColumns}
+                apiURL='cars'
+                actions={actions}
+            />
+            {showUpdateModal && <UpdateCar car={car!} />}
+        </>
     )
 }
 
