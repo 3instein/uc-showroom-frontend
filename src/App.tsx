@@ -9,14 +9,6 @@ function App() {
           <div className='w-screen'>
             <h1 className="text-5xl font-bold">UC Showroom</h1>
             <p className="py-6 text-2xl">Pilih salah satu menu di bawah untuk memulai!</p>
-            {/* <div className="join">
-              <Link to={`customers`}>
-                <button className="btn btn-primary join-item">Pelanggan</button>
-              </Link>
-              <Link to={`cars`}>
-                <button className="btn btn-success join-item">Mobil</button>
-              </Link>
-            </div> */}
             <div className="tabs tabs-boxed">
               <NavLink
                 to={`customers`}
