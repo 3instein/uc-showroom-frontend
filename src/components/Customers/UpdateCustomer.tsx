@@ -37,56 +37,59 @@ const UpdateCustomer: FC<UpdateCustomerProps> = ({ customer }) => {
             address: customer.address,
             phone: customer.phone,
             id_card_number: customer.id_card_number,
-            id_card_photo: customer.id_card_photo
+            id_card_photo: null
         },
         validationSchema: Yup.object({
             name: Yup.string().required('Nama harus diisi'),
             address: Yup.string().required('Alamat harus diisi'),
             phone: Yup.string().required('Nomor telepon harus diisi'),
             id_card_number: Yup.string().required('Nomor KTP harus diisi'),
-            id_card_photo: Yup.mixed().required('Foto KTP harus diisi')
         }),
         onSubmit: async (values) => {
             try {
-                const resourceResponse = await insertCustomerResource(values.id_card_photo);
-                if (resourceResponse.status === 200) {
-                    const updatedCustomer: Customer = {
-                        id: customer.id,
-                        name: values.name,
-                        address: values.address,
-                        phone: values.phone,
-                        id_card_number: values.id_card_number,
-                        id_card_photo: resourceResponse.data.data.imageUrl
-                    }
-                    const response = await updateCustomer(updatedCustomer);
-                    if (response.status === 200) {
-                        setTableData(tableData.map((customer) => {
-                            if (customer.id === updatedCustomer.id) {
-                                return updatedCustomer
-                            }
-                            return customer
-                        }))
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: 'Customer berhasil diupdate',
-                            icon: 'success',
-                            confirmButtonText: 'OK',
-                            target: updateCustomerModal
-                        }).then(() => {
-                            const modal = updateCustomerModal
-                            if (modal instanceof HTMLDialogElement) {
-                                modal.close()
-                            }
-                        })
-                    } else {
-                        Swal.fire({
-                            title: 'Gagal!',
-                            text: 'Customer gagal diupdate',
-                            icon: 'error',
-                            confirmButtonText: 'OK',
-                            target: document.getElementById('create-customer-modal') as HTMLElement
-                        })
-                    }
+                let id_card_photo
+
+                if (values.id_card_photo) {
+                    const resourceResponse = await insertCustomerResource(values.id_card_photo!);
+                    id_card_photo = resourceResponse.data.data.imageUrl
+                }
+
+                const updatedCustomer: Customer = {
+                    id: customer.id,
+                    name: values.name,
+                    address: values.address,
+                    phone: values.phone,
+                    id_card_number: values.id_card_number,
+                    id_card_photo: id_card_photo ? id_card_photo : customer.id_card_photo
+                }
+                const response = await updateCustomer(updatedCustomer);
+                if (response.status === 200) {
+                    setTableData(tableData.map((customer) => {
+                        if (customer.id === updatedCustomer.id) {
+                            return updatedCustomer
+                        }
+                        return customer
+                    }))
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: 'Customer berhasil diupdate',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        target: updateCustomerModal
+                    }).then(() => {
+                        const modal = updateCustomerModal
+                        if (modal instanceof HTMLDialogElement) {
+                            modal.close()
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Customer gagal diupdate',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                        target: document.getElementById('create-customer-modal') as HTMLElement
+                    })
                 }
             } catch (error) {
                 console.log(error);
