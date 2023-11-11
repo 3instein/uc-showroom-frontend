@@ -13,10 +13,10 @@ interface VehicleFormProps {
     formik: any;
 
     /**
-     * The type of the vehicle, e.g., 'Mobil', 'Truck', or 'Motor'.
-     * @type {'Mobil' | 'Truck' | 'Motor'}
+     * The type of the vehicle, e.g., 'Mobil', 'Truk', or 'Motor'.
+     * @type {'Mobil' | 'Truk' | 'Motor'}
      */
-    type: 'Mobil' | 'Truck' | 'Motor';
+    type: 'Mobil' | 'Truk' | 'Motor';
 }
 
 /**
