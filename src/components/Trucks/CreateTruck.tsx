@@ -8,12 +8,23 @@ import { VehicleForm } from '../Form/VehicleForm';
 import { CreateTruck as CreateTruckType, Truck } from '../../interfaces/Truck';
 import { createTruck } from '../../api/TruckCRUD';
 
+/**
+ * React component for creating a new truck.
+ *
+ * @component
+ * @example
+ * // Example usage in a parent component
+ * import { CreateTruck } from './CreateTruck';
+ * //...
+ * <CreateTruck />
+ */
 const CreateTruck: FC = () => {
-
+    // Access the DataTable store to manage table data
     const { tableData, setTableData } = useDataTableStore()
-
+    // Reference to the modal element
     const modal = document.getElementById('create-truck-modal');
 
+    // Formik hook for form management and validation
     const formik = useFormik({
         initialValues: {
             model: '',
@@ -24,6 +35,7 @@ const CreateTruck: FC = () => {
             wheels: '',
             cargo_capacity: '',
         },
+        // Validation schema for form fields
         validationSchema: Yup.object({
             model: Yup.string().required('Model truk harus diisi'),
             year: Yup.number().required('Tahun truk harus diisi'),
@@ -38,6 +50,7 @@ const CreateTruck: FC = () => {
             cargo_capacity: Yup.number().required('Luas area kargo truk harus diisi'),
         }),
         onSubmit: async (values) => {
+            // Construct new truck object
             const truck: CreateTruckType = {
                 model: values.model,
                 year: Number(values.year),
@@ -48,9 +61,13 @@ const CreateTruck: FC = () => {
                 cargo_capacity: Number(values.cargo_capacity),
             }
             try {
+                // Send POST request to API
                 const response = await createTruck(truck);
+                // If request is successful, update the table data
                 if (response.status === 200) {
+                    // Add the new truck to the table data
                     setTableData([...tableData, response.data.data as Truck])
+                    // Show success alert
                     Swal.fire({
                         title: 'Berhasil!',
                         text: 'Truk berhasil ditambahkan',
@@ -63,6 +80,7 @@ const CreateTruck: FC = () => {
                         }
                     })
                 } else {
+                    // Show error alert
                     Swal.fire({
                         title: 'Gagal!',
                         text: 'Truk gagal ditambahkan',
@@ -77,12 +95,14 @@ const CreateTruck: FC = () => {
         }
     })
 
+    // Event listener for modal close
     if (modal) {
         modal.addEventListener('close', () => {
             formik.resetForm()
         })
     }
 
+    // Render the CreateTruck component
     return (
         <>
             {/* Open Modal Button */}

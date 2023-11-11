@@ -8,15 +8,30 @@ import { customNumberFormat } from '../../functions/general';
 import { Truck } from '../../interfaces/Truck';
 import { updateTruck } from '../../api/TruckCRUD';
 
+/**
+ * React component for updating an existing truck.
+ *
+ * @component
+ * @example
+ * // Example usage in a parent component
+ * import { UpdateTruck } from './UpdateTruck';
+ * //...
+ * <UpdateTruck truck={selectedTruck} />
+ *
+ * @param {UpdateTruckProps} props - The component props.
+ * @param {Truck} props.truck - The truck data to be updated.
+ */
 interface UpdateTruckProps {
     truck: Truck
 }
 
 const UpdateTruck: FC<UpdateTruckProps> = ({ truck }) => {
-
+    // Reference to the modal element
     const modal = document.getElementById(`update-truck-modal-${truck.id}`);
+    // Access the DataTable store to update the table data
     const { tableData, setTableData } = useDataTableStore()
 
+    // Formik hook for form management and validation
     const formik = useFormik({
         initialValues: {
             model: truck.model,
@@ -27,6 +42,7 @@ const UpdateTruck: FC<UpdateTruckProps> = ({ truck }) => {
             wheels: truck.wheels,
             cargo_capacity: truck.cargo_capacity,
         },
+        // Validation schema for form fields
         validationSchema: Yup.object({
             model: Yup.string().required('Model truck harus diisi'),
             year: Yup.number().required('Tahun truck harus diisi'),
@@ -41,6 +57,7 @@ const UpdateTruck: FC<UpdateTruckProps> = ({ truck }) => {
             cargo_capacity: Yup.number().required('Luas area kargo truk harus diisi'),
         }),
         onSubmit: async (values) => {
+            // Construct updated truck object
             const updatedTruck: Truck = {
                 id: truck.id,
                 model: values.model,
@@ -52,14 +69,18 @@ const UpdateTruck: FC<UpdateTruckProps> = ({ truck }) => {
                 cargo_capacity: Number(values.cargo_capacity),
             }
             try {
+                // Send PUT request to API
                 const response = await updateTruck(updatedTruck);
+                // If request is successful, update the table data
                 if (response.status === 200) {
+                    // Update the table data in the store with the updated truck
                     setTableData(tableData.map((truck) => {
                         if (truck.id === updatedTruck.id) {
                             return updatedTruck
                         }
                         return truck
                     }))
+                    // Show success alert
                     Swal.fire({
                         title: 'Berhasil!',
                         text: 'Truck berhasil diupdate',
@@ -72,6 +93,7 @@ const UpdateTruck: FC<UpdateTruckProps> = ({ truck }) => {
                         }
                     })
                 } else {
+                    // Show error alert
                     Swal.fire({
                         title: 'Gagal!',
                         text: 'Truck gagal diupdate',
@@ -85,6 +107,8 @@ const UpdateTruck: FC<UpdateTruckProps> = ({ truck }) => {
             }
         }
     })
+
+    // Render the UpdateTruck component
     return (
         <dialog id={`update-truck-modal-${truck.id}`} className="modal">
             <div className="modal-box text-left">
