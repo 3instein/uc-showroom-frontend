@@ -1,8 +1,7 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FC, useEffect, useId, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
-import { useDataTableStore } from '../../stores/DataTableStore';
 import Swal from 'sweetalert2';
 import Select from 'react-select';
 import { Customer } from '../../interfaces/Customer';
@@ -13,7 +12,6 @@ import { Car } from '../../interfaces/Car';
 import { Truck } from '../../interfaces/Truck';
 import { Motorcycle } from '../../interfaces/Motorcycle';
 import { createOrder } from '../../api/OrderCRUD';
-import { Order } from '../../interfaces/Order';
 
 const CreateOrder: FC = () => {
 
@@ -24,8 +22,6 @@ const CreateOrder: FC = () => {
     ]
 
     const BASE_URL = 'http://localhost:3000/'
-
-    const { tableData, setTableData } = useDataTableStore()
 
     const [customers, setCustomers] = useState<SelectOption<Customer>[]>([])
     const [cars, setCars] = useState<SelectOption<Car>[]>([])
