@@ -74,7 +74,7 @@ const Trucks: FC = () => {
             selector: row => row.manufacturer,
         },
         {
-            name: "Jumlah Roda",
+            name: "Wheels",
             selector: row => row.wheels
         },
         {
