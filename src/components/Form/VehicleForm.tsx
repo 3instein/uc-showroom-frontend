@@ -43,6 +43,7 @@ const VehicleForm: FC<VehicleFormProps> = ({ formik, type }) => {
                         // Replace non-digits
                         event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
                     }}
+                    maxLength={4}
                 />
                 {formik.touched.year && formik.errors.year && (
                     <label className="label pt-1">
@@ -64,6 +65,7 @@ const VehicleForm: FC<VehicleFormProps> = ({ formik, type }) => {
                         // Replace non-digits
                         event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
                     }}
+                    maxLength={2}
                 />
                 {formik.touched.seats && formik.errors.seats && (
                     <label className="label pt-1">
@@ -104,6 +106,7 @@ const VehicleForm: FC<VehicleFormProps> = ({ formik, type }) => {
                         // Replace non-digits
                         event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
                     }}
+                    maxLength={12}
                 />
                 {formik.touched.price && formik.errors.price && (
                     <label className="label pt-1">

@@ -132,6 +132,7 @@ const CreateCar: FC = () => {
                                     // Replace non-digits
                                     event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
                                 }}
+                                maxLength={5}
                             />
                             {formik.touched.trunk_capacity && formik.errors.trunk_capacity && (
                                 <label className="label pt-1">

@@ -134,6 +134,7 @@ const CreateCustomer: FC = () => {
                                     // Replace non-digits
                                     event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
                                 }}
+                                maxLength={16}
                             />
                             {formik.touched.phone && formik.errors.phone && (
                                 <label className="label pt-1">
@@ -155,6 +156,7 @@ const CreateCustomer: FC = () => {
                                     // Replace non-digits
                                     event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
                                 }}
+                                maxLength={16}
                             />
                             {formik.touched.id_card_number && formik.errors.id_card_number && (
                                 <label className="label pt-1">

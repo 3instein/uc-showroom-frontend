@@ -115,6 +115,7 @@ const CreateTruck: FC = () => {
                                     // Replace non-digits
                                     event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
                                 }}
+                                maxLength={2}
                             />
                             {formik.touched.wheels && formik.errors.wheels && (
                                 <label className="label pt-1">
@@ -136,6 +137,7 @@ const CreateTruck: FC = () => {
                                     // Replace non-digits
                                     event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
                                 }}
+                                maxLength={5}
                             />
                             {formik.touched.cargo_capacity && formik.errors.cargo_capacity && (
                                 <label className="label pt-1">

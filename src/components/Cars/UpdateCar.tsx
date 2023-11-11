@@ -94,7 +94,7 @@ const UpdateCar: FC<UpdateCarProps> = ({car}) => {
                 </form>
                 <h3 className="font-bold text-lg">Form Update Mobil</h3>
                 <form onSubmit={formik.handleSubmit} noValidate>
-                    <VehicleForm formik={formik} />
+                    <VehicleForm formik={formik} type='Mobil' />
                     {/* Fuel Type */}
                     <div className="form-control w-full max-w-xs">
                         <label className="label">
@@ -126,6 +126,7 @@ const UpdateCar: FC<UpdateCarProps> = ({car}) => {
                                 // Replace non-digits
                                 event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
                             }}
+                            maxLength={5}
                         />
                         {formik.touched.trunk_capacity && formik.errors.trunk_capacity && (
                             <label className="label pt-1">
