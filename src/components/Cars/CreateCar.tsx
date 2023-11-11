@@ -100,7 +100,7 @@ const CreateCar: FC = () => {
                     </form>
                     <h3 className="font-bold text-lg">Form Tambah Mobil</h3>
                     <form onSubmit={formik.handleSubmit} noValidate>
-                        <VehicleForm formik={formik} />
+                        <VehicleForm formik={formik} type='Mobil' />
                         {/* Fuel Type */}
                         <div className="form-control w-full max-w-xs">
                             <label className="label">

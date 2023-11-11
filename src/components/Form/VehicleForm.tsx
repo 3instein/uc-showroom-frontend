@@ -2,9 +2,10 @@ import { FC, ChangeEvent } from 'react';
 import { nominalFormat } from '../../functions/general';
 interface VehicleFormProps {
     formik: any
+    type: 'Mobil' | 'Truck'
 }
 
-const VehicleForm: FC<VehicleFormProps> = ({ formik }) => {
+const VehicleForm: FC<VehicleFormProps> = ({ formik, type }) => {
     const handleNominalChange = (e: ChangeEvent<HTMLInputElement>) => {
         const formattedValue = nominalFormat(e.target.value);
         formik.setFieldValue('price', formattedValue);
@@ -18,7 +19,7 @@ const VehicleForm: FC<VehicleFormProps> = ({ formik }) => {
                 </label>
                 <input
                     type="text"
-                    placeholder="Model Mobil"
+                    placeholder={`Model ${type}`}
                     className={`input input-bordered w-full max-w-xs ${formik.touched.model && formik.errors.model ? 'input-error' : ''}`}
                     {...formik.getFieldProps('model')}
                 />
@@ -35,7 +36,7 @@ const VehicleForm: FC<VehicleFormProps> = ({ formik }) => {
                 </label>
                 <input
                     type="text"
-                    placeholder="Tahun Mobil"
+                    placeholder={`Tahun ${type}`}
                     className={`input input-bordered w-full max-w-xs ${formik.touched.year && formik.errors.year ? 'input-error' : ''}`}
                     {...formik.getFieldProps('year')}
                     onInput={(event) => {
