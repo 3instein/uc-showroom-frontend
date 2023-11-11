@@ -8,7 +8,7 @@ import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import { useDataTableStore } from '../stores/DataTableStore';
 import { Motorcycle } from '../interfaces/Motorcycle';
-import { deleteMotorcycle } from '../api/Motorcycle';
+import { deleteMotorcycle } from '../api/MotorcycleCRUD';
 import { CreateMotorcycle } from '../components/Motorcycles/CreateMotorcycle';
 import { UpdateMotorcycle } from '../components/Motorcycles/UpdateMotorcycle';
 

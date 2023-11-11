@@ -6,7 +6,7 @@ import { useDataTableStore } from '../../stores/DataTableStore';
 import Swal from 'sweetalert2';
 import { customNumberFormat } from '../../functions/general';
 import { Motorcycle } from '../../interfaces/Motorcycle';
-import { updateMotorcycle } from '../../api/Motorcycle';
+import { updateMotorcycle } from '../../api/MotorcycleCRUD';
 
 interface UpdateMotorcycleProps {
     motorcycle: Motorcycle

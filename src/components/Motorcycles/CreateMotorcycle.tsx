@@ -6,7 +6,7 @@ import { useDataTableStore } from '../../stores/DataTableStore';
 import Swal from 'sweetalert2';
 import { VehicleForm } from '../Form/VehicleForm';
 import { CreateMotorcycle as CreateMotorcycleType, Motorcycle } from '../../interfaces/Motorcycle';
-import { createMotorcycle } from '../../api/Motorcycle';
+import { createMotorcycle } from '../../api/MotorcycleCRUD';
 
 const CreateMotorcycle: FC = () => {
 
