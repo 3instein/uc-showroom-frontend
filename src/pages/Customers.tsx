@@ -8,8 +8,20 @@ const Customers: FC = () => {
 
     const tableColumns: TableColumn<Customer>[] = [
         {
-            name: "name",
+            name: "Name",
             selector: row => row.name,
+        },
+        {
+            name: "Address",
+            selector: row => row.address,
+        },
+        {
+            name: "Phone",
+            selector: row => row.phone,
+        },
+        {
+            name: "ID Card Number",
+            selector: row => row.id_card_number,
         }
     ]
 
