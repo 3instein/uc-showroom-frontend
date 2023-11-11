@@ -24,10 +24,10 @@ export const createCar = async (car: CreateCar): Promise<AxiosResponse<CarRespon
  * Updates an existing car with the provided information.
  *
  * @param {Car} car - The updated car data.
- * @returns {Promise<AxiosResponse<Car>>} - A Promise that resolves to the AxiosResponse containing the updated car.
+ * @returns {Promise<AxiosResponse<CarResponser>>} - A Promise that resolves to the AxiosResponse containing the updated car.
  * @throws {Error} - Throws an error if the update process fails.
  */
-export const updateCar = async (car: Car): Promise<AxiosResponse<Car>> => {
+export const updateCar = async (car: Car): Promise<AxiosResponse<CarResponse>> => {
     try {
         const response = await axios.put(`${BASE_URL}/cars/${car.id}`, car);
         return response;
