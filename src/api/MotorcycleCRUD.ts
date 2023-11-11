@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { Motorcycle, CreateMotorcycle } from "../interfaces/Motorcycle";
+import { Motorcycle, CreateMotorcycle, MotorcycleResponse } from "../interfaces/Motorcycle";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -7,10 +7,10 @@ const BASE_URL = "http://localhost:3000";
  * Creates a new motorcycle with the provided information.
  *
  * @param {CreateMotorcycle} motorcycle - The motorcycle data for creating a new motorcycle.
- * @returns {Promise<AxiosResponse<Motorcycle>>} - A Promise that resolves to the AxiosResponse containing the created motorcycle.
+ * @returns {Promise<AxiosResponse<MotorcycleResponse>>} - A Promise that resolves to the AxiosResponse containing the created motorcycle.
  * @throws {Error} - Throws an error if the creation process fails.
  */
-export const createMotorcycle = async (motorcycle: CreateMotorcycle): Promise<AxiosResponse<Motorcycle>> => {
+export const createMotorcycle = async (motorcycle: CreateMotorcycle): Promise<AxiosResponse<MotorcycleResponse>> => {
     try {
         const response = await axios.post(`${BASE_URL}/motorcycles`, motorcycle);
         return response;
@@ -24,10 +24,10 @@ export const createMotorcycle = async (motorcycle: CreateMotorcycle): Promise<Ax
  * Updates an existing motorcycle with the provided information.
  *
  * @param {Motorcycle} motorcycle - The updated motorcycle data.
- * @returns {Promise<AxiosResponse<Motorcycle>>} - A Promise that resolves to the AxiosResponse containing the updated motorcycle.
+ * @returns {Promise<AxiosResponse<MotorcycleResponse>>} - A Promise that resolves to the AxiosResponse containing the updated motorcycle.
  * @throws {Error} - Throws an error if the update process fails.
  */
-export const updateMotorcycle = async (motorcycle: Motorcycle): Promise<AxiosResponse<Motorcycle>> => {
+export const updateMotorcycle = async (motorcycle: Motorcycle): Promise<AxiosResponse<MotorcycleResponse>> => {
     try {
         const response = await axios.put(`${BASE_URL}/motorcycles/${motorcycle.id}`, motorcycle);
         return response;

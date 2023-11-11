@@ -21,6 +21,20 @@ export interface Motorcycle extends Vehicle {
 }
 
 /**
+ * Represents the response data when retrieving a motorcycle.
+ *
+ * @interface MotorcycleResponse
+ */
+export interface MotorcycleResponse {
+    /**
+     * The data of the retrieved motorcycle.
+     * @type {Motorcycle}
+     */
+    data: Motorcycle;
+}
+
+
+/**
  * Represents the data required to create a new motorcycle, excluding the unique identifier.
  *
  * @type CreateMotorcycle
