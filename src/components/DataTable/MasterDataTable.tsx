@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect, useState, Dispatch, SetStateAction } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import { useDataTableStore } from "../../stores/DataTableStore";
 import useSWR from 'swr';
@@ -8,11 +8,11 @@ interface MasterDataTableProps {
     tableColumns: TableColumn<any>[]
     actions?: ReactNode[]
     apiURL: 'cars' | 'customers' | 'trucks' | 'motorcycles' | 'orders'
-    setLoading?: Dispatch<SetStateAction<boolean>>
+    expanded?: boolean
+    expandedRowComponent?: FC<any>
 }
 
-
-const MasterDataTable: FC<MasterDataTableProps> = ({ tableColumns, actions, apiURL, setLoading }) => {
+const MasterDataTable: FC<MasterDataTableProps> = ({ tableColumns, actions, apiURL, expanded, expandedRowComponent }) => {
 
     const BASE_URL = 'http://localhost:3000/'
 
@@ -61,9 +61,6 @@ const MasterDataTable: FC<MasterDataTableProps> = ({ tableColumns, actions, apiU
     useEffect(() => {
         if (!isLoading) {
             setTableData(data.data)
-            if (setLoading) {
-                setLoading(false);
-            }
         }
     }, [data])
 
@@ -109,6 +106,10 @@ const MasterDataTable: FC<MasterDataTableProps> = ({ tableColumns, actions, apiU
                         data={
                             !isValidating ? filteredTableData : []
                         }
+                        expandableRows={expanded}
+                        expandOnRowClicked={expanded}
+                        highlightOnHover={expanded}
+                        expandableRowsComponent={expandedRowComponent}
                         pagination
                     />
                 </div>
