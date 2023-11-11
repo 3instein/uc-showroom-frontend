@@ -1,4 +1,5 @@
 import { Vehicle } from "./Vehicle";
+
 /**
  * Represents a truck, extending the basic details of a vehicle.
  *
@@ -17,6 +18,19 @@ export interface Truck extends Vehicle {
      * @type {number}
      */
     cargo_capacity: number;
+}
+
+/**
+ * Represents the response data structure when fetching a single truck.
+ *
+ * @interface TruckResponse
+ */
+export interface TruckResponse {
+    /**
+     * The data of the truck.
+     * @type {Truck}
+     */
+    data: Truck;
 }
 
 /**
