@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { Cars } from './pages/Cars.tsx';
 import { Customers } from './pages/Customers.tsx';
+import { Trucks } from './pages/Trucks.tsx';
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/cars",
         element: <Cars />
+      },
+      {
+        path: "/trucks",
+        element: <Trucks />
       }
     ]
   },
