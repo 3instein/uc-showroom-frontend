@@ -72,6 +72,10 @@ const Customers: FC = () => {
             selector: row => row.id_card_number,
         },
         {
+            name: "ID Card Image",
+            cell: (row) => <img src={row.id_card_photo} alt="id_card_image" className="h-20" />
+        },
+        {
             name: "Actions",
             cell: (row) =>
                 <div className="flex justify-center space-x-2 py-1">

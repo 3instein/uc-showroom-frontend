@@ -1,15 +1,30 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FC } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { createCustomer } from '../../api/CustomerCRUD';
 import { CreateCustomer as CreateCustomerType, Customer } from '../../interfaces/Customer';
 import { useDataTableStore } from '../../stores/DataTableStore';
 import Swal from 'sweetalert2';
+import { insertCustomerResource } from '../../api/CustomerResource';
 
 const CreateCustomer: FC = () => {
 
     const { tableData, setTableData } = useDataTableStore()
+
+    const [file, setFile] = useState<string | null>(null);
+
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        if (e.target.files && e.target.files[0]) {
+            setFile(URL.createObjectURL(e.target.files[0]));
+            formik.handleChange({
+                target: {
+                    name: "id_card_photo",
+                    value: e.target.files[0]
+                }
+            })
+        }
+    }
 
     const formik = useFormik({
         initialValues: {
@@ -17,44 +32,50 @@ const CreateCustomer: FC = () => {
             address: '',
             phone: '',
             id_card_number: '',
+            id_card_photo: '',
         },
         validationSchema: Yup.object({
             name: Yup.string().required('Nama harus diisi'),
             address: Yup.string().required('Alamat harus diisi'),
             phone: Yup.string().required('Nomor telepon harus diisi'),
             id_card_number: Yup.string().required('Nomor KTP harus diisi'),
+            id_card_photo: Yup.mixed().required('Foto KTP harus diisi'),
         }),
         onSubmit: async (values) => {
-            const customer: CreateCustomerType = {
-                name: values.name,
-                address: values.address,
-                phone: values.phone,
-                id_card_number: values.id_card_number,
-            }
             try {
-                const response = await createCustomer(customer);
-                if (response.status === 200) {
-                    setTableData([...tableData, response.data.data as Customer])
-                    Swal.fire({
-                        title: 'Berhasil!',
-                        text: 'Customer berhasil ditambahkan',
-                        icon: 'success',
-                        confirmButtonText: 'OK',
-                        target: document.getElementById('create-customer-modal') as HTMLElement
-                    }).then(() => {
-                        const modal = document.getElementById('create-customer-modal');
-                        if (modal instanceof HTMLDialogElement) {
-                            modal.close()
-                        }
-                    })
-                } else {
-                    Swal.fire({
-                        title: 'Gagal!',
-                        text: 'Customer gagal ditambahkan',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                        target: document.getElementById('create-customer-modal') as HTMLElement
-                    })
+                const resourceResponse = await insertCustomerResource(values.id_card_photo);
+                if (resourceResponse.status === 200) {
+                    const customer: CreateCustomerType = {
+                        name: values.name,
+                        address: values.address,
+                        phone: values.phone,
+                        id_card_number: values.id_card_number,
+                        id_card_photo: resourceResponse.data.data.imageUrl
+                    }
+                    const response = await createCustomer(customer);
+                    if (response.status === 200) {
+                        setTableData([...tableData, response.data.data as Customer])
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Customer berhasil ditambahkan',
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                            target: document.getElementById('create-customer-modal') as HTMLElement
+                        }).then(() => {
+                            const modal = document.getElementById('create-customer-modal');
+                            if (modal instanceof HTMLDialogElement) {
+                                modal.close()
+                            }
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Customer gagal ditambahkan',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            target: document.getElementById('create-customer-modal') as HTMLElement
+                        })
+                    }
                 }
             } catch (error) {
                 console.log(error);
@@ -164,6 +185,19 @@ const CreateCustomer: FC = () => {
                                 </label>
                             )}
                         </div>
+                        {/* Image */}
+                        <div className="form-control w-full max-w-xs">
+                            <label className="label">
+                                <span className="label-text font-bold">Foto KTP</span>
+                            </label>
+                            <input
+                                type="file"
+                                className={`file-input file-input-bordered w-full max-w-xs ${formik.touched.id_card_number && formik.errors.id_card_number ? 'input-error' : ''}`}
+                                onChange={handleChange}
+                                onBlur={() => formik.setFieldTouched("id_card_photo", true)}
+                            />
+                        </div>
+                        {file && <img src={file} alt="meeting" className="image-full my-5" />}
                         <button type='submit' className='btn btn-primary float-right'>Tambah</button>
                     </form>
                 </div>
