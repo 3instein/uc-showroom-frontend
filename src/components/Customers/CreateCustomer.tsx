@@ -8,14 +8,28 @@ import { useDataTableStore } from '../../stores/DataTableStore';
 import Swal from 'sweetalert2';
 import { insertCustomerResource } from '../../api/CustomerResource';
 
+/**
+ * CreateCustomer component allows users to add new customer details.
+ *
+ * @component
+ * @returns {JSX.Element} - The rendered CreateCustomer component.
+ */
 const CreateCustomer: FC = () => {
 
+    // Access the DataTable store to update the table data
     const { tableData, setTableData } = useDataTableStore()
 
+    // File input ref
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // File state for image preview
     const [file, setFile] = useState<string | null>(null);
 
+    /**
+    * Handles the change event for the file input to update the selected file and trigger formik handleChange.
+    *
+    * @param {ChangeEvent<HTMLInputElement>} e - The change event.
+    */
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         if (e.target.files && e.target.files[0]) {
             setFile(URL.createObjectURL(e.target.files[0]));
@@ -28,6 +42,7 @@ const CreateCustomer: FC = () => {
         }
     }
 
+    // Formik hook for form management and validation
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -45,8 +60,10 @@ const CreateCustomer: FC = () => {
         }),
         onSubmit: async (values) => {
             try {
+                 // Upload the customer ID card photo to a resource and get the resource response
                 const resourceResponse = await insertCustomerResource(values.id_card_photo);
                 if (resourceResponse.status === 200) {
+                    // If resource upload is successful, proceed to create the customer
                     const customer: CreateCustomerType = {
                         name: values.name,
                         address: values.address,
@@ -54,9 +71,14 @@ const CreateCustomer: FC = () => {
                         id_card_number: values.id_card_number,
                         id_card_photo: resourceResponse.data.data.imageUrl
                     }
+
+                    // Attempt to create a new customer via API
                     const response = await createCustomer(customer);
+
                     if (response.status === 200) {
+                        // If customer creation is successful, update local tableData
                         setTableData([...tableData, response.data.data as Customer])
+                        // Show success alert
                         Swal.fire({
                             title: 'Berhasil!',
                             text: 'Customer berhasil ditambahkan',
@@ -70,6 +92,7 @@ const CreateCustomer: FC = () => {
                             }
                         })
                     } else {
+                        // Show error alert
                         Swal.fire({
                             title: 'Gagal!',
                             text: 'Customer gagal ditambahkan',
@@ -95,6 +118,7 @@ const CreateCustomer: FC = () => {
         })
     }
 
+    // Render the CreateCustomer component
     return (
         <>
             {/* Open Modal Button */}

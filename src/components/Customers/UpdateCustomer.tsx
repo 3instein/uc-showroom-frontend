@@ -7,16 +7,29 @@ import { useDataTableStore } from '../../stores/DataTableStore';
 import Swal from 'sweetalert2';
 import { insertCustomerResource } from '../../api/CustomerResource';
 
+/**
+ * UpdateCustomer component allows users to modify existing customer details.
+ *
+ * @component
+ * @param {UpdateCustomerProps} props - The properties passed to the component.
+ * @returns {JSX.Element} - The rendered UpdateCustomer component.
+ */
 interface UpdateCustomerProps {
     customer: Customer
 }
 
 const UpdateCustomer: FC<UpdateCustomerProps> = ({ customer }) => {
-
+    // Access the DataTable store to update the table data
     const { tableData, setTableData } = useDataTableStore()
 
+    // File state for image preview
     const [file, setFile] = useState<string | null>(null);
 
+    /**
+     * Handles the change event for the file input to update the selected file and trigger formik handleChange.
+     *
+     * @param {ChangeEvent<HTMLInputElement>} e - The change event.
+     */
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         if (e.target.files && e.target.files[0]) {
             setFile(URL.createObjectURL(e.target.files[0]));
@@ -29,8 +42,10 @@ const UpdateCustomer: FC<UpdateCustomerProps> = ({ customer }) => {
         }
     }
 
+    // Get the modal element by ID
     const updateCustomerModal = document.getElementById(`update-customer-modal-${customer.id}`);
 
+    // Formik hook for form management and validation
     const formik = useFormik({
         initialValues: {
             name: customer.name,
@@ -49,11 +64,13 @@ const UpdateCustomer: FC<UpdateCustomerProps> = ({ customer }) => {
             try {
                 let id_card_photo
 
+                // If a new ID card photo is provided, upload it to a resource and get the resource response
                 if (values.id_card_photo) {
                     const resourceResponse = await insertCustomerResource(values.id_card_photo!);
                     id_card_photo = resourceResponse.data.data.imageUrl
                 }
 
+                // Create the updated customer object
                 const updatedCustomer: Customer = {
                     id: customer.id,
                     name: values.name,
@@ -62,14 +79,19 @@ const UpdateCustomer: FC<UpdateCustomerProps> = ({ customer }) => {
                     id_card_number: values.id_card_number,
                     id_card_photo: id_card_photo ? id_card_photo : customer.id_card_photo
                 }
+
+                // Attempt to update the customer via API
                 const response = await updateCustomer(updatedCustomer);
+                
                 if (response.status === 200) {
+                    // If customer update is successful, update local tableData
                     setTableData(tableData.map((customer) => {
                         if (customer.id === updatedCustomer.id) {
                             return updatedCustomer
                         }
                         return customer
                     }))
+                    // Show success message
                     Swal.fire({
                         title: 'Berhasil!',
                         text: 'Customer berhasil diupdate',
@@ -83,6 +105,7 @@ const UpdateCustomer: FC<UpdateCustomerProps> = ({ customer }) => {
                         }
                     })
                 } else {
+                    // Show error message
                     Swal.fire({
                         title: 'Gagal!',
                         text: 'Customer gagal diupdate',
@@ -97,6 +120,7 @@ const UpdateCustomer: FC<UpdateCustomerProps> = ({ customer }) => {
         }
     })
 
+    // Render the UpdateCustomer component
     return (
         <>
             <dialog id={`update-customer-modal-${customer.id}`} className="modal">
