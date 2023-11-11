@@ -8,6 +8,7 @@ import { useDataTableStore } from '../stores/DataTableStore';
 import { Motorcycle } from '../interfaces/Motorcycle';
 import { deleteMotorcycle } from '../api/Motorcycle';
 import { CreateMotorcycle } from '../components/Motorcycles/CreateMotorcycle';
+import { UpdateMotorcycle } from '../components/Motorcycles/UpdateMotorcycle';
 
 const Motorcycles: FC = () => {
 
@@ -136,7 +137,7 @@ const Motorcycles: FC = () => {
                 apiURL='motorcycles'
                 actions={actions}
             />
-            {/* {showUpdateModal && <UpdateMotorcycle motorcycle={motorcycle!} />} */}
+            {showUpdateModal && <UpdateMotorcycle motorcycle={motorcycle!} />}
         </>
     )
 }
