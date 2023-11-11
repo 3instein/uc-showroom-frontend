@@ -4,3 +4,5 @@ export interface Car extends Vehicle {
     fuel_type: string
     trunk_capacity: number
 }
+
+export type CreateCar = Omit<Car, "id">;

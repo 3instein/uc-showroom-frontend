@@ -3,6 +3,7 @@ import { MasterDataTable } from '../components/DataTable/MasterDataTable';
 import { TableColumn } from 'react-data-table-component';
 import { Car } from '../interfaces/Car';
 import { customNumberFormat } from '../functions/general';
+import { CreateCar } from '../components/Cars/CreateCar';
 
 const Cars: FC = () => {
 
@@ -36,10 +37,15 @@ const Cars: FC = () => {
             selector: row => row.price && 'Rp. ' + customNumberFormat(row.price),
         }
     ]
+
+    const actions = [
+        <CreateCar />
+    ]
     return (
         <MasterDataTable
             tableColumns={tableColumns}
             apiURL='cars'
+            actions={actions}
         />
     )
 }
