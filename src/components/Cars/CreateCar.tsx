@@ -1,23 +1,18 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { ChangeEvent, FC } from 'react';
+import { FC } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { Car, CreateCar as CreateCarType } from '../../interfaces/Car';
 import { useDataTableStore } from '../../stores/DataTableStore';
 import Swal from 'sweetalert2';
 import { createCar } from '../../api/CarCRUD';
-import { nominalFormat } from '../../functions/general';
+import { VehicleForm } from '../Form/VehicleForm';
 
 const CreateCar: FC = () => {
 
     const { tableData, setTableData } = useDataTableStore()
 
     const modal = document.getElementById('create-car-modal');
-
-    const handleNominalChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const formattedValue = nominalFormat(e.target.value);
-        formik.setFieldValue('price', formattedValue);
-    };
 
     const formik = useFormik({
         initialValues: {
@@ -48,7 +43,7 @@ const CreateCar: FC = () => {
                 year: Number(values.year),
                 seats: Number(values.seats),
                 manufacturer: values.manufacturer,
-                price: Number(values.price),
+                price: Number(values.price.replace(/\./g, '')),
                 fuel_type: values.fuel_type,
                 trunk_capacity: Number(values.trunk_capacity),
             }
@@ -105,105 +100,7 @@ const CreateCar: FC = () => {
                     </form>
                     <h3 className="font-bold text-lg">Form Tambah Mobil</h3>
                     <form onSubmit={formik.handleSubmit} noValidate>
-                        {/* Model */}
-                        <div className="form-control w-full max-w-xs">
-                            <label className="label">
-                                <span className="label-text font-bold">Model</span>
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="Model Mobil"
-                                className={`input input-bordered w-full max-w-xs ${formik.touched.model && formik.errors.model ? 'input-error' : ''}`}
-                                {...formik.getFieldProps('model')}
-                            />
-                            {formik.touched.model && formik.errors.model && (
-                                <label className="label pt-1">
-                                    <span className="label-text text-xs text-red-600">{formik.errors.model}</span>
-                                </label>
-                            )}
-                        </div>
-                        {/* Year */}
-                        <div className="form-control w-full max-w-xs">
-                            <label className="label">
-                                <span className="label-text font-bold">Tahun</span>
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="Tahun Mobil"
-                                className={`input input-bordered w-full max-w-xs ${formik.touched.year && formik.errors.year ? 'input-error' : ''}`}
-                                {...formik.getFieldProps('year')}
-                                onInput={(event) => {
-                                    // Replace non-digits
-                                    event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
-                                }}
-                            />
-                            {formik.touched.year && formik.errors.year && (
-                                <label className="label pt-1">
-                                    <span className="label-text text-xs text-red-600">{formik.errors.year}</span>
-                                </label>
-                            )}
-                        </div>
-                        {/* Seats */}
-                        <div className="form-control w-full max-w-xs">
-                            <label className="label">
-                                <span className="label-text font-bold">Jumlah Penumpang</span>
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="Jumlah Penumpang"
-                                className={`input input-bordered w-full max-w-xs ${formik.touched.seats && formik.errors.seats ? 'input-error' : ''}`}
-                                {...formik.getFieldProps('seats')}
-                                onInput={(event) => {
-                                    // Replace non-digits
-                                    event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
-                                }}
-                            />
-                            {formik.touched.seats && formik.errors.seats && (
-                                <label className="label pt-1">
-                                    <span className="label-text text-xs text-red-600">{formik.errors.seats}</span>
-                                </label>
-                            )}
-                        </div>
-                        {/* Manufacturer */}
-                        <div className="form-control w-full max-w-xs">
-                            <label className="label">
-                                <span className="label-text font-bold">Manufaktur</span>
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="Nama Manufaktur"
-                                className={`input input-bordered w-full max-w-xs ${formik.touched.manufacturer && formik.errors.manufacturer ? 'input-error' : ''}`}
-                                {...formik.getFieldProps('manufacturer')}
-                            />
-                            {formik.touched.manufacturer && formik.errors.manufacturer && (
-                                <label className="label pt-1">
-                                    <span className="label-text text-xs text-red-600">{formik.errors.manufacturer}</span>
-                                </label>
-                            )}
-                        </div>
-                        {/* Price */}
-                        <div className="form-control w-full max-w-xs">
-                            <label className="label">
-                                <span className="label-text font-bold">Harga</span>
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="100.000.000"
-                                className={`input input-bordered w-full max-w-xs ${formik.touched.price && formik.errors.price ? 'input-error' : ''}`}
-                                value={formik.values.price}
-                                onChange={handleNominalChange}
-                                onBlur={formik.handleBlur}
-                                onInput={(event) => {
-                                    // Replace non-digits
-                                    event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
-                                }}
-                            />
-                            {formik.touched.price && formik.errors.price && (
-                                <label className="label pt-1">
-                                    <span className="label-text text-xs text-red-600">{formik.errors.price}</span>
-                                </label>
-                            )}
-                        </div>
+                        <VehicleForm formik={formik} />
                         {/* Fuel Type */}
                         <div className="form-control w-full max-w-xs">
                             <label className="label">
