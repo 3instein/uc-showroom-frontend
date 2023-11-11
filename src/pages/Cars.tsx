@@ -33,7 +33,7 @@ const Cars: FC = () => {
         },
         {
             name: "Price",
-            selector: row => 'Rp. ' + customNumberFormat(row.price),
+            selector: row => row.price && 'Rp. ' + customNumberFormat(row.price),
         }
     ]
     return (
