@@ -10,7 +10,7 @@ import { SelectOption } from '../../interfaces/SelectOption';
 import { Car } from '../../interfaces/Car';
 import { Truck } from '../../interfaces/Truck';
 import { Motorcycle } from '../../interfaces/Motorcycle';
-import { createOrder, updateOrder } from '../../api/OrderCRUD';
+import { updateOrder } from '../../api/OrderCRUD';
 import { Order } from '../../interfaces/Order';
 
 interface UpdateOrderProps {
