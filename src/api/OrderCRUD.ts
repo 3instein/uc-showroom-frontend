@@ -34,6 +34,7 @@ export const createOrder = async (
  *
  * @param {number} id - The ID of the order to be updated.
  * @param {number} customer_id - The updated ID of the customer associated with the order.
+ * @param {'car' | 'truck' | 'motorcycle'} previous_vehicle_type - The previous type of vehicle in the order.
  * @param {'car' | 'truck' | 'motorcycle'} vehicle_type - The updated type of vehicle in the order.
  * @param {number} vehicle_id - The updated ID of the vehicle in the order.
  * @returns {Promise<AxiosResponse>} - A Promise that resolves to the AxiosResponse after successfully updating the order.
@@ -42,9 +43,22 @@ export const createOrder = async (
 export const updateOrder = async (
     id: number,
     customer_id: number,
+    previous_vehicle_type: 'car' | 'truck' | 'motorcycle',
     vehicle_type: 'car' | 'truck' | 'motorcycle',
     vehicle_id: number
 ): Promise<AxiosResponse> => {
+    if (previous_vehicle_type !== vehicle_type) {
+        try {
+            const deleteResponse = await deleteOrder(id, previous_vehicle_type);
+            if (deleteResponse.status === 200) {
+                const createResponse = await createOrder(customer_id, vehicle_type, vehicle_id);
+                return createResponse;
+            }
+        } catch (error) {
+            // Handle and rethrow the error for better error handling in the application.
+            throw new Error(`Failed to update order`);
+        }
+    }
     try {
         const response = await axios.put(`${BASE_URL}/${id}`, {
             customer_id,
@@ -56,7 +70,7 @@ export const updateOrder = async (
         // Handle and rethrow the error for better error handling in the application.
         throw new Error(`Failed to update order`);
     }
-};
+}
 
 /**
  * Deletes an order with the specified ID and vehicle type.

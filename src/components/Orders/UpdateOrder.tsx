@@ -68,7 +68,7 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
                     'motorcycle'
             try {
                 // Make an API request to update the order
-                const response = await updateOrder(order.id, values.customer!, vehicle_type, vehicle_id!)
+                const response = await updateOrder(order.id, values.customer!, order.vehicle_type, vehicle_type, vehicle_id!)
                 // Handle the response
                 if (response.status === 200) {
                     // Refresh the orders data
@@ -106,7 +106,7 @@ const UpdateOrder: FC<UpdateOrderProps> = ({ order }) => {
     // SWR hook for fetching data from the API
     const fetcher = (url: string) => axios.get(url).then(res => res.data)
 
-     // SWR hooks for customers, cars, trucks, and motorcycles data
+    // SWR hooks for customers, cars, trucks, and motorcycles data
     const { data: customersData = [], error: errorCustomers, isLoading: isLoadingCustomers } = useSWR(BASE_URL + 'customers', fetcher)
     const { data: carsData = [], error: errorCars, isLoading: isLoadingCars } = useSWR(BASE_URL + 'cars', fetcher)
     const { data: trucksData = [], error: errorTrucks, isLoading: isLoadingTrucks } = useSWR(BASE_URL + 'trucks', fetcher)
